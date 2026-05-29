@@ -1,4 +1,5 @@
-import type { Split, TrainingFrequency } from '@/types/types'
+import type { Split } from '@/types/types'
+import type { TrainingFrequency } from '@/types/onboarding.types'
 
 export function getRecommendedSplit(frequency: TrainingFrequency): Split {
     switch (frequency) {
@@ -6,9 +7,9 @@ export function getRecommendedSplit(frequency: TrainingFrequency): Split {
             return 'Fullbody'
 
         case '3-4':
-            return 'Upper Lower'
+            return 'Upper_Lower'
 
         case '5+':
-            return 'PPL 2x'
+            return 'PPL_2x'
     }
 }

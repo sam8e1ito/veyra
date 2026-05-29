@@ -1,10 +1,10 @@
 import { OnboardingDataKey, OnboardingDoneKey } from '@/constants/localStorage'
 import { useState } from 'react'
 import { steps } from './steps'
-
+import type { UserData } from '@/types/types'
 import { useNavigate } from 'react-router-dom'
 import Button from '@/components/Button'
-import type { OnboardingData } from '@/types/types'
+import type { OnboardingData } from '@/types/onboarding.types'
 import { getRecommendedSplit } from '@/utils/split'
 import { isStepValid } from './validation'
 
@@ -19,10 +19,10 @@ export default function OnboardingFlow() {
         trainingFrequency: null,
         splitType: null,
 
-        heightCm: 0,
-        weightKg: 0,
+        heightCm: null,
+        weightKg: null,
         gender: null,
-        age: 0,
+        age: null,
     })
 
     const StepComponent = steps[step]
@@ -41,9 +41,28 @@ export default function OnboardingFlow() {
 
             if (!freq) return
 
-            const finalData = {
-                ...data,
-                splitType: getRecommendedSplit(freq),
+            if (
+                !data.goal ||
+                !data.activityLevel ||
+                !data.gender ||
+                !data.age ||
+                !data.weightKg ||
+                !data.heightCm ||
+                !data.trainingFrequency
+            ) {
+                return
+            }
+
+            const finalData: UserData = {
+                goal: data.goal,
+                activityLevel: data.activityLevel,
+                trainingFrequency: data.trainingFrequency,
+                splitType: getRecommendedSplit(data.trainingFrequency),
+
+                heightCm: data.heightCm,
+                weightKg: data.weightKg,
+                gender: data.gender,
+                age: data.age,
             }
 
             localStorage.setItem(OnboardingDoneKey, 'true')

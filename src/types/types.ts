@@ -1,34 +1,28 @@
+import type {
+    ActivityLevel,
+    Gender,
+    Goal,
+    TrainingFrequency,
+} from './onboarding.types'
+
 export type Page = 'dashboard' | 'meals' | 'settings' | 'goal' | 'trainings'
 
+// for Select Component
 export type Option = {
     label: string
     value: string
 }
 
-export type Split = 'Fullbody' | 'PPL 2x' | 'Upper Lower'
-export type ActivityLevel =
-    | 'sedentary'
-    | 'lightly active'
-    | 'moderately active'
-    | 'very active'
-export type Goal =
-    | 'build muscle'
-    | 'lose fat'
-    | 'increase strength'
-    | 'stay fit & healthy'
-export type Gender = 'male' | 'female'
-export type TrainingFrequency = '1-2' | '3-4' | '5+'
+export type Split = 'Fullbody' | 'PPL_2x' | 'Upper_Lower'
 
-export type OnboardingData = {
-    goal: Goal | null
-    activityLevel: ActivityLevel | null
-    trainingFrequency: TrainingFrequency | null
-    splitType: Split | null
+export type UserData = {
+    goal: Goal
+    activityLevel: ActivityLevel
+    trainingFrequency: TrainingFrequency
+    splitType: Split
 
     heightCm: number
     weightKg: number
-    gender: Gender | null
+    gender: Gender
     age: number
 }
-
-export type UserProfile = OnboardingData

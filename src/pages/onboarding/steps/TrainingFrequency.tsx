@@ -1,6 +1,6 @@
 import Question from '@/components/Question'
 import Input from '@/components/Input'
-import type { OnboardingData } from '@/types/types'
+import type { OnboardingData } from '@/types/onboarding.types'
 
 type TrainingFrequencyProps = {
     data: OnboardingData
