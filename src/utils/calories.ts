@@ -83,6 +83,6 @@ export function calculateMacros(user: UserData): Macros {
         protein: Math.round(proteinGrams),
         fats: Math.round(fatGrams),
         carbs: Math.round(carbsGrams),
-        totalCalories: Math.round(proteinGrams + fatGrams + carbsGrams),
+        totalCalories: Math.round(calories),
     }
 }

@@ -10,3 +10,21 @@ export type MacroConfig = {
     fatRatio: number
     calorieAdjustment: number
 }
+
+export type Meal = {
+    id: string
+    title: string
+    calories: number
+    protein: number
+    carbs: number
+    fats: number
+    createdAt: number
+}
+
+export type DailyProgress = {
+    meals: Meal[]
+    calories: number
+    protein: number
+    carbs: number
+    fats: number
+}
