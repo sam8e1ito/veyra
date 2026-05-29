@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { UserData } from '@/types/types'
 import { ONBOARDING_DATA_KEY } from '@/constants/localStorage'
 import { calculateMacros } from '@/utils/calories'
@@ -16,12 +16,9 @@ function getUserFromStorage(): UserData | null {
 }
 
 export function useUser() {
-    const [user, setUserState] = useState<UserData | null>(null)
-
-    useEffect(() => {
-        const data = getUserFromStorage()
-        setUserState(data)
-    }, [])
+    const [user, setUserState] = useState<UserData | null>(() =>
+        getUserFromStorage()
+    )
 
     function setUser(newUser: UserData) {
         setUserState(newUser)

@@ -1,9 +1,9 @@
 import { NavLink, useLocation } from 'react-router-dom'
-import { useDailyProgress } from '@/hooks/useDailyProgress'
+import { useMealUI } from '@/app/contexts/MealUIContext'
 
 export default function Navbar() {
     const { pathname } = useLocation()
-    const { addMeal } = useDailyProgress()
+    const { openCreate } = useMealUI()
 
     const isMealsPage = pathname === '/meals'
 
@@ -28,15 +28,7 @@ export default function Navbar() {
                                     e.preventDefault()
                                     e.stopPropagation()
 
-                                    addMeal({
-                                        calories: 500,
-                                        carbs: 30,
-                                        fats: 20,
-                                        protein: 30,
-                                        createdAt: Date.now(),
-                                        id: '12ds',
-                                        title: 'burger',
-                                    })
+                                    openCreate()
                                 }}
                             >
                                 +

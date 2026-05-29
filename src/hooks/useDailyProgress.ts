@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { DailyProgressContext } from '@/app/providers/dailyProgressContext'
+import { DailyProgressContext } from '@/app/contexts/DailyProgressContext'
 
 export function useDailyProgress() {
     const ctx = useContext(DailyProgressContext)

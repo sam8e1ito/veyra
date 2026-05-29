@@ -17,13 +17,6 @@ export default function Dashboard() {
         return <div>Loading...</div>
     }
 
-    const remaining = {
-        calories: macros.totalCalories - today.calories,
-        protein: macros.protein - today.protein,
-        carbs: macros.carbs - today.carbs,
-        fats: macros.fats - today.fats,
-    }
-
     return (
         <div>
             <Card title="Current Goal">
@@ -34,7 +27,6 @@ export default function Dashboard() {
                 <div>
                     {today.calories} / {macros.totalCalories} kcal
                 </div>
-                <div>Remaining: {remaining.calories} kcal</div>
             </Card>
 
             <div>
