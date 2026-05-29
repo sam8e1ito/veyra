@@ -1,4 +1,4 @@
-import { OnboardingDataKey, OnboardingDoneKey } from '@/constants/localStorage'
+import { ONBOARDING_DONE_KEY } from '@/constants/localStorage'
 import { useState } from 'react'
 import { steps } from './steps'
 import type { UserData } from '@/types/types'
@@ -7,8 +7,11 @@ import Button from '@/components/Button'
 import type { OnboardingData } from '@/types/onboarding.types'
 import { getRecommendedSplit } from '@/utils/split'
 import { isStepValid } from './validation'
+import { useUser } from '@/hooks/useUser'
 
 export default function OnboardingFlow() {
+    const { setUser } = useUser()
+
     const [step, setStep] = useState(0)
 
     const navigate = useNavigate()
@@ -65,8 +68,8 @@ export default function OnboardingFlow() {
                 age: data.age,
             }
 
-            localStorage.setItem(OnboardingDoneKey, 'true')
-            localStorage.setItem(OnboardingDataKey, JSON.stringify(finalData))
+            localStorage.setItem(ONBOARDING_DONE_KEY, 'true')
+            setUser(finalData)
 
             navigate('/dashboard')
         }
