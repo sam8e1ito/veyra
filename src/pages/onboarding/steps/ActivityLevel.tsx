@@ -1,6 +1,6 @@
 import Question from '@/components/Question'
 import Input from '@/components/Input'
-import type { OnboardingData } from '@/types/types'
+import type { OnboardingData } from '@/types/onboarding.types'
 
 type ActivityLevelStepProps = {
     data: OnboardingData
@@ -29,9 +29,9 @@ export default function ActivityLevel({
             <Input
                 type="radio"
                 name="activityLevel"
-                value="lightly active"
+                value="light"
                 label="Lightly active"
-                checked={data.activityLevel === 'lightly active'}
+                checked={data.activityLevel === 'light'}
                 onChange={(e) =>
                     update({
                         activityLevel: e.target
@@ -42,9 +42,9 @@ export default function ActivityLevel({
             <Input
                 type="radio"
                 name="activityLevel"
-                value="moderately active"
+                value="moderate"
                 label="Moderately active"
-                checked={data.activityLevel === 'moderately active'}
+                checked={data.activityLevel === 'moderate'}
                 onChange={(e) =>
                     update({
                         activityLevel: e.target
@@ -55,9 +55,9 @@ export default function ActivityLevel({
             <Input
                 type="radio"
                 name="activityLevel"
-                value="very active"
+                value="very_active"
                 label="Very active"
-                checked={data.activityLevel === 'very active'}
+                checked={data.activityLevel === 'very_active'}
                 onChange={(e) =>
                     update({
                         activityLevel: e.target

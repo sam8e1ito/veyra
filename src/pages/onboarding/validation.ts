@@ -1,4 +1,4 @@
-import type { OnboardingData } from '@/types/types'
+import type { OnboardingData } from '@/types/onboarding.types'
 
 export function isStepValid(step: number, data: OnboardingData) {
     switch (step) {
@@ -13,9 +13,9 @@ export function isStepValid(step: number, data: OnboardingData) {
 
         case 3:
             return (
-                data.heightCm > 0 &&
-                data.weightKg > 0 &&
-                data.age > 0 &&
+                data.heightCm !== null &&
+                data.weightKg !== null &&
+                data.age !== null &&
                 data.gender !== null
             )
 

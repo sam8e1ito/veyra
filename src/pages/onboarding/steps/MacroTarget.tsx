@@ -1,7 +1,7 @@
 import Question from '@/components/Question'
 import Input from '@/components/Input'
 import Select from '@/components/Select'
-import type { Gender, OnboardingData } from '@/types/types'
+import type { Gender, OnboardingData } from '@/types/onboarding.types'
 
 type MacroTargetStepProps = {
     data: OnboardingData
@@ -14,13 +14,13 @@ export default function MacroTarget({ data, update }: MacroTargetStepProps) {
             <Input
                 label="Height (cm)"
                 type="number"
-                value={data.heightCm}
+                value={data.heightCm ?? ''}
                 onChange={(e) => update({ heightCm: Number(e.target.value) })}
             />
             <Input
                 label="Weight (kg)"
                 type="number"
-                value={data.weightKg}
+                value={data.weightKg ?? ''}
                 onChange={(e) => update({ weightKg: Number(e.target.value) })}
             />
             <Select
@@ -39,7 +39,7 @@ export default function MacroTarget({ data, update }: MacroTargetStepProps) {
             <Input
                 label="Age"
                 type="number"
-                value={data.age}
+                value={data.age ?? ''}
                 onChange={(e) => update({ age: Number(e.target.value) })}
             />
         </Question>
