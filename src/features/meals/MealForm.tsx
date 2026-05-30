@@ -5,6 +5,7 @@ import { useMealDate } from '@/hooks/useMealDate'
 import { useMealUI } from '@/app/contexts/MealUIContext'
 import { useMealData } from '@/app/contexts/MealDataContext'
 import type { Meal } from '@/types/macros.types'
+import toast from 'react-hot-toast'
 
 type MealFormState = {
     title: string
@@ -124,7 +125,15 @@ function MealFormFields({ meal }: { meal: Meal | null }) {
 
             <div>Calories: {calories}</div>
 
-            <Button type="submit" disabled={!title}>
+            <Button
+                type="submit"
+                disabled={!title}
+                onClick={() => {
+                    isEditing
+                        ? toast.success('Meal edited succesfully.')
+                        : toast.success('Meal added succesfully.')
+                }}
+            >
                 {isEditing ? 'Edit Meal' : 'Add Meal'}
             </Button>
         </form>

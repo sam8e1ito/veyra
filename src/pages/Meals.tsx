@@ -4,14 +4,11 @@ import { getDateKey } from '@/utils/date'
 import { useMealDate } from '@/hooks/useMealDate'
 import { useMealData } from '@/app/contexts/MealDataContext'
 import { useMealUI } from '@/app/contexts/MealUIContext'
+import toast from 'react-hot-toast'
 
 export default function Meals() {
-    const {
-        openEdit,
-        selectedMealId,
-        toggleSelectedMeal,
-        clearMealUIForMeal,
-    } = useMealUI()
+    const { openEdit, selectedMealId, toggleSelectedMeal, clearMealUIForMeal } =
+        useMealUI()
     const { selectedDate, setSelectedDate } = useMealDate()
 
     const { history, getDay, deleteMeal } = useMealData()
@@ -94,6 +91,10 @@ export default function Meals() {
                                             e.stopPropagation()
                                             deleteMeal(selectedDate, meal.id)
                                             clearMealUIForMeal(meal.id)
+
+                                            toast.success(
+                                                'Meal deleted succesfully.'
+                                            )
                                         }}
                                     >
                                         Delete
