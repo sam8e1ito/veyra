@@ -1,10 +1,10 @@
 import ReactDOM from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import { router } from './app/router/router'
-import { DailyProgressProvider } from './app/providers/dailyProgressProvider'
+import { AppProviders } from './app/providers/AppProviders'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <DailyProgressProvider>
+    <AppProviders>
         <RouterProvider router={router} />
-    </DailyProgressProvider>
+    </AppProviders>
 )
