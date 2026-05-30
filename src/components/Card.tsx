@@ -1,5 +1,5 @@
 type CardProps = {
-    title?: string
+    title?: string | React.ReactElement
     children: React.ReactNode
     className?: string
 }
@@ -7,7 +7,7 @@ type CardProps = {
 export default function Card({ title, children, className }: CardProps) {
     return (
         <div className={className ?? ''}>
-            {title && <h3>{title}</h3>}
+            {typeof title === 'string' ? <h3>{title}</h3> : title}
             {children}
         </div>
     )

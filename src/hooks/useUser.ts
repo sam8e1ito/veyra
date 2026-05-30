@@ -2,7 +2,8 @@ import { useState } from 'react'
 import type { UserData } from '@/types/types'
 import { ONBOARDING_DATA_KEY } from '@/constants/localStorage'
 import { calculateMacros } from '@/utils/calories'
-import { goalStatusMap } from '@/data/goalStatusMap'
+import { goalStatusLabel } from '@/data/goalStatusLabel'
+import { SplitLabel } from '@/data/splitLabel'
 
 function getUserFromStorage(): UserData | null {
     const raw = localStorage.getItem(ONBOARDING_DATA_KEY)
@@ -27,7 +28,9 @@ export function useUser() {
 
     const macros = user ? calculateMacros(user) : null
 
-    const goalStatus = user ? goalStatusMap[user.goal] : null
+    const goalStatus = user ? goalStatusLabel[user.goal] : null
+
+    const splitLabel = user ? SplitLabel[user.splitType] : null
 
     return {
         user,
@@ -36,5 +39,6 @@ export function useUser() {
         setUser,
 
         goalStatus,
+        splitLabel,
     }
 }

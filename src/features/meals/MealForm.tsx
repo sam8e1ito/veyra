@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
+import { useMealDate } from '@/hooks/useMealDate'
 import { useMealUI } from '@/app/contexts/MealUIContext'
 import { useMealData } from '@/app/contexts/MealDataContext'
 import type { Meal } from '@/types/macros.types'
@@ -49,6 +50,7 @@ export function MealForm() {
 function MealFormFields({ meal }: { meal: Meal | null }) {
     const { addMeal, editMeal } = useMealData()
     const { closeMealModal } = useMealUI()
+    const { selectedDate } = useMealDate()
     const [form, setForm] = useState<MealFormState>(() => getInitialForm(meal))
 
     const isEditing = meal !== null
@@ -71,9 +73,9 @@ function MealFormFields({ meal }: { meal: Meal | null }) {
                 }
 
                 if (isEditing) {
-                    editMeal(submittedMeal)
+                    editMeal(selectedDate, submittedMeal)
                 } else {
-                    addMeal(submittedMeal)
+                    addMeal(selectedDate, submittedMeal)
                 }
 
                 closeMealModal()
