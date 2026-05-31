@@ -10,17 +10,36 @@ import Meals from '@/pages/Meals'
 import Trainings from '@/pages/Trainings'
 import Goal from '@/pages/Goal'
 import Settings from '@/pages/Settings'
+import Login from '@/pages/Login'
 
 import ProtectedRoute from './ProtectedRoute'
+import AuthenticatedRoute from './AuthenticatedRoute'
+import Register from '@/pages/Register'
 
 export const router = createBrowserRouter([
     {
-        path: '/',
-        element: <Welcome />,
+        path: '/login',
+        element: <Login />,
+    },
+    {
+        path: '/register',
+        element: <Register />,
+    },
+    {
+        path: '/welcome',
+        element: (
+            <AuthenticatedRoute>
+                <Welcome />
+            </AuthenticatedRoute>
+        ),
     },
     {
         path: '/onboarding',
-        element: <OnboardingFlow />,
+        element: (
+            <AuthenticatedRoute>
+                <OnboardingFlow />
+            </AuthenticatedRoute>
+        ),
     },
 
     {
@@ -30,7 +49,7 @@ export const router = createBrowserRouter([
             </ProtectedRoute>
         ),
         children: [
-            { path: '/dashboard', element: <Dashboard /> },
+            { path: '/', element: <Dashboard /> },
             { path: '/meals', element: <Meals /> },
             { path: '/trainings', element: <Trainings /> },
             { path: '/goal', element: <Goal /> },

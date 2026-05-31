@@ -16,6 +16,7 @@ export type Option = {
 export type Split = 'Fullbody' | 'PPL_2x' | 'Upper_Lower'
 
 export type UserData = {
+    user_id: string
     goal: Goal
     activityLevel: ActivityLevel
     trainingFrequency: TrainingFrequency

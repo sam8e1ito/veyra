@@ -1,13 +1,18 @@
 export const mock = {
     '2026-05-28': {
+        id: 'local-user:2026-05-28',
+        user_id: 'local-user',
+        date: '2026-05-28',
         meals: [
             {
                 id: '1',
+                user_id: 'local-user',
                 title: 'old day meal',
                 protein: 30,
                 carbs: 40,
                 fats: 10,
                 calories: 400,
+                createdAt: 1779926400000,
             },
         ],
         calories: 400,
@@ -16,14 +21,19 @@ export const mock = {
         fats: 10,
     },
     '2026-05-29': {
+        id: 'local-user:2026-05-29',
+        user_id: 'local-user',
+        date: '2026-05-29',
         meals: [
             {
                 id: '2',
+                user_id: 'local-user',
                 title: 'yesterday meal',
                 protein: 50,
                 carbs: 60,
                 fats: 20,
                 calories: 700,
+                createdAt: 1780012800000,
             },
         ],
         calories: 700,
@@ -32,6 +42,9 @@ export const mock = {
         fats: 20,
     },
     '2026-06-20': {
+        id: 'local-user:2026-06-20',
+        user_id: 'local-user',
+        date: '2026-06-20',
         meals: [],
         calories: 0,
         protein: 0,

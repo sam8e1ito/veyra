@@ -1,6 +1,6 @@
 import type { Goal } from '@/types/onboarding.types'
 
-export const goalStatusLabel: Record<Goal, string> = {
+export const GoalStatusLabel: Record<Goal, string> = {
     build_muscle: 'Bulk',
     increase_strength: 'Lean Bulk',
     lose_fat: 'Cut',

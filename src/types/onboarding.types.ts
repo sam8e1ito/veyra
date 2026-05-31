@@ -13,6 +13,7 @@ export type Gender = 'male' | 'female'
 export type TrainingFrequency = '1-2' | '3-4' | '5+'
 
 export type OnboardingData = {
+    user_id: string | null
     goal: Goal | null
     activityLevel: ActivityLevel | null
     trainingFrequency: TrainingFrequency | null

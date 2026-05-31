@@ -57,11 +57,17 @@ export default function Meals() {
                     day.meals.map((meal) => (
                         <Card title={meal.title} key={meal.id}>
                             <p style={{ display: 'block' }}>
+                                Calories: {meal.calories}kcal
+                            </p>
+
+                            <p style={{ display: 'block' }}>
                                 Protein: {meal.protein}g
                             </p>
+
                             <p style={{ display: 'block' }}>
                                 Carbs: {meal.carbs}g
                             </p>
+
                             <p style={{ display: 'block' }}>
                                 Fats: {meal.fats}g
                             </p>

@@ -1,16 +1,31 @@
 import type { DailyProgress } from '@/types/DailyProgress.types'
 import type { Meal } from '@/types/macros.types'
 
-export type MealTotals = Omit<DailyProgress, 'meals'>
+export type MealTotals = Omit<
+    DailyProgress,
+    'id' | 'user_id' | 'date' | 'meals'
+>
 export type ProgressHistory = Record<string, DailyProgress>
 
-export const emptyDailyProgress = Object.freeze<DailyProgress>({
-    meals: [],
-    calories: 0,
-    protein: 0,
-    carbs: 0,
-    fats: 0,
-})
+export function getDailyProgressId(userId: string, date: string) {
+    return `${userId}:${date}`
+}
+
+export function createEmptyDailyProgress(
+    userId: string,
+    date: string
+): DailyProgress {
+    return {
+        id: getDailyProgressId(userId, date),
+        user_id: userId,
+        date,
+        meals: [],
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fats: 0,
+    }
+}
 
 export function recalcTotals(meals: Meal[]): MealTotals {
     return meals.reduce<MealTotals>(
@@ -24,8 +39,15 @@ export function recalcTotals(meals: Meal[]): MealTotals {
     )
 }
 
-export function createDailyProgress(meals: Meal[]): DailyProgress {
+export function createDailyProgress(
+    userId: string,
+    date: string,
+    meals: Meal[]
+): DailyProgress {
     return {
+        id: getDailyProgressId(userId, date),
+        user_id: userId,
+        date,
         meals,
         ...recalcTotals(meals),
     }
@@ -33,7 +55,8 @@ export function createDailyProgress(meals: Meal[]): DailyProgress {
 
 export function getOrCreateDay(
     history: ProgressHistory,
+    userId: string,
     date: string
 ): DailyProgress {
-    return history[date] ?? emptyDailyProgress
+    return history[date] ?? createEmptyDailyProgress(userId, date)
 }

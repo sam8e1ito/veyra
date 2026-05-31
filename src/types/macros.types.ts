@@ -13,6 +13,7 @@ export type MacroConfig = {
 
 export type Meal = {
     id: string
+    user_id: string
     title: string
     calories: number
     protein: number
