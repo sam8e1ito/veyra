@@ -12,6 +12,7 @@
         "formatCheck": "prettier --check ."
     },
     "dependencies": {
+        "@supabase/supabase-js": "^2.106.2",
         "react": "^19.2.6",
         "react-dom": "^19.2.6",
         "react-hot-toast": "^2.6.0",

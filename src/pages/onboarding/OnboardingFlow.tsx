@@ -1,4 +1,4 @@
-import { ONBOARDING_DONE_KEY } from '@/constants/localStorage'
+import { ONBOARDING_DONE_KEY, getUserScopedKey } from '@/constants/localStorage'
 import { useState } from 'react'
 import { steps } from './steps'
 import type { UserData } from '@/types/types'
@@ -7,16 +7,19 @@ import Button from '@/components/Button'
 import type { OnboardingData } from '@/types/onboarding.types'
 import { getRecommendedSplit } from '@/utils/split'
 import { isStepValid } from './validation'
-import { useUser } from '@/hooks/useUser'
+import { useProfile } from '@/hooks/useProfile'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function OnboardingFlow() {
-    const { setUser } = useUser()
+    const { user } = useAuth()
+    const { setProfile } = useProfile()
 
     const [step, setStep] = useState(0)
 
     const navigate = useNavigate()
 
     const [data, setData] = useState<OnboardingData>({
+        user_id: user?.id ?? null,
         goal: null,
         activityLevel: null,
         trainingFrequency: null,
@@ -40,6 +43,8 @@ export default function OnboardingFlow() {
             setStep(step + 1)
             return
         } else {
+            if (!user) return
+
             const freq = data.trainingFrequency
 
             if (!freq) return
@@ -57,6 +62,7 @@ export default function OnboardingFlow() {
             }
 
             const finalData: UserData = {
+                user_id: user.id,
                 goal: data.goal,
                 activityLevel: data.activityLevel,
                 trainingFrequency: data.trainingFrequency,
@@ -68,10 +74,13 @@ export default function OnboardingFlow() {
                 age: data.age,
             }
 
-            localStorage.setItem(ONBOARDING_DONE_KEY, 'true')
-            setUser(finalData)
+            localStorage.setItem(
+                getUserScopedKey(ONBOARDING_DONE_KEY, finalData.user_id),
+                'true'
+            )
+            setProfile(finalData)
 
-            navigate('/dashboard')
+            navigate('/')
         }
     }
 

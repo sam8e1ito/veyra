@@ -6,18 +6,19 @@ import {
     useMemo,
     useState,
 } from 'react'
-import { DAILY_PROGRESS_KEY } from '@/constants/localStorage'
+import { DAILY_PROGRESS_KEY, getUserScopedKey } from '@/constants/localStorage'
 import type { Meal } from '@/types/macros.types'
 import type { DailyProgress } from '@/types/DailyProgress.types'
 import { getDateKey } from '@/utils/date'
 import {
+    createEmptyDailyProgress,
     createDailyProgress,
-    emptyDailyProgress,
     getOrCreateDay,
     recalcTotals,
     type MealTotals,
     type ProgressHistory,
 } from '@/utils/dailyProgress'
+import { useAuth } from '@/hooks/useAuth'
 
 export type MealDataContextValue = {
     history: ProgressHistory
@@ -29,8 +30,6 @@ export type MealDataContextValue = {
     recalcTotals: (meals: Meal[]) => MealTotals
 }
 
-export const defaultState = emptyDailyProgress
-
 export const MealDataContext = createContext<MealDataContextValue | null>(null)
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -41,7 +40,7 @@ function isFiniteNumber(value: unknown): value is number {
     return typeof value === 'number' && Number.isFinite(value)
 }
 
-function parseMeal(value: unknown): Meal | null {
+function parseMeal(value: unknown, userId: string): Meal | null {
     if (!isRecord(value)) return null
 
     if (
@@ -55,59 +54,64 @@ function parseMeal(value: unknown): Meal | null {
         return null
     }
 
-    const id = value.id
-    const title = value.title
-    const calories = value.calories
-    const protein = value.protein
-    const carbs = value.carbs
-    const fats = value.fats
+    const mealUserId =
+        typeof value.user_id === 'string' ? value.user_id : userId
+
+    if (mealUserId !== userId) return null
 
     return {
-        id,
-        title,
-        calories,
-        protein,
-        carbs,
-        fats,
+        id: value.id,
+        user_id: mealUserId,
+        title: value.title,
+        calories: value.calories,
+        protein: value.protein,
+        carbs: value.carbs,
+        fats: value.fats,
         createdAt: isFiniteNumber(value.createdAt) ? value.createdAt : 0,
     }
 }
 
-function parseDailyProgress(value: unknown): DailyProgress | null {
+function parseDailyProgress(
+    value: unknown,
+    userId: string,
+    date: string
+): DailyProgress | null {
     if (!isRecord(value) || !Array.isArray(value.meals)) return null
 
-    const meals = value.meals.reduce<Meal[]>((meals, meal) => {
-        const parsedMeal = parseMeal(meal)
+    const progressUserId =
+        typeof value.user_id === 'string' ? value.user_id : userId
 
-        if (parsedMeal) {
-            meals.push(parsedMeal)
-        }
+    if (progressUserId !== userId) return null
 
-        return meals
+    const meals = value.meals.reduce<Meal[]>((acc, meal) => {
+        const parsed = parseMeal(meal, userId)
+        if (parsed) acc.push(parsed)
+        return acc
     }, [])
 
-    return createDailyProgress(meals)
+    return createDailyProgress(userId, date, meals)
 }
 
-function loadHistory(): ProgressHistory {
-    const raw = localStorage.getItem(DAILY_PROGRESS_KEY)
+function loadHistory(userId: string): ProgressHistory {
+    const raw =
+        localStorage.getItem(getUserScopedKey(DAILY_PROGRESS_KEY, userId)) ??
+        localStorage.getItem(DAILY_PROGRESS_KEY)
+
     if (!raw) return {}
 
     try {
         const parsed: unknown = JSON.parse(raw)
-        const legacyDay = parseDailyProgress(parsed)
-        if (legacyDay) return { [getDateKey()]: legacyDay }
+        const today = getDateKey()
+
+        const legacyDay = parseDailyProgress(parsed, userId, today)
+        if (legacyDay) return { [today]: legacyDay }
 
         if (!isRecord(parsed)) return {}
 
         return Object.entries(parsed).reduce<ProgressHistory>(
             (history, [date, progress]) => {
-                const day = parseDailyProgress(progress)
-
-                if (day) {
-                    history[date] = day
-                }
-
+                const day = parseDailyProgress(progress, userId, date)
+                if (day) history[date] = day
                 return history
             },
             {}
@@ -118,61 +122,108 @@ function loadHistory(): ProgressHistory {
 }
 
 export function useMealDataValue(): MealDataContextValue {
-    const [history, setHistory] = useState<ProgressHistory>(() => loadHistory())
+    const { user } = useAuth()
 
-    const getDay = useCallback(
-        (date: string) => getOrCreateDay(history, date),
-        [history]
-    )
+    const userId = user?.id
 
-    const addMeal = useCallback((date: string, meal: Meal) => {
-        setHistory((prev) => {
-            const currentDay = getOrCreateDay(prev, date)
-
-            return {
-                ...prev,
-                [date]: createDailyProgress([...currentDay.meals, meal]),
-            }
-        })
-    }, [])
-
-    const editMeal = useCallback((date: string, updated: Meal) => {
-        setHistory((prev) => {
-            const currentDay = getOrCreateDay(prev, date)
-            const meals = currentDay.meals.map((meal) =>
-                meal.id === updated.id ? updated : meal
-            )
-
-            return {
-                ...prev,
-                [date]: createDailyProgress(meals),
-            }
-        })
-    }, [])
-
-    const deleteMeal = useCallback((date: string, id: string) => {
-        setHistory((prev) => {
-            const currentDay = getOrCreateDay(prev, date)
-
-            return {
-                ...prev,
-                [date]: createDailyProgress(
-                    currentDay.meals.filter((meal) => meal.id !== id)
-                ),
-            }
-        })
-    }, [])
-
-    const resetDay = useCallback((date: string) => {
-        setHistory((prev) => ({
-            ...prev,
-            [date]: emptyDailyProgress,
-        }))
-    }, [])
+    const [history, setHistory] = useState<ProgressHistory>({})
 
     useEffect(() => {
-        localStorage.setItem(DAILY_PROGRESS_KEY, JSON.stringify(history))
-    }, [history])
+        if (!userId) return
+
+        const loaded = loadHistory(userId)
+        setHistory(loaded)
+    }, [userId])
+
+    const getDay = useCallback(
+        (date: string): DailyProgress => {
+            if (!userId) return createEmptyDailyProgress('', date)
+            return getOrCreateDay(history, userId, date)
+        },
+        [history, userId]
+    )
+
+    const addMeal = useCallback(
+        (date: string, meal: Meal) => {
+            if (!userId) return
+
+            setHistory((prev) => {
+                const currentDay = getOrCreateDay(prev, userId, date)
+
+                return {
+                    ...prev,
+                    [date]: createDailyProgress(userId, date, [
+                        ...currentDay.meals,
+                        { ...meal, user_id: userId },
+                    ]),
+                }
+            })
+        },
+        [userId]
+    )
+
+    const editMeal = useCallback(
+        (date: string, updated: Meal) => {
+            if (!userId) return
+
+            setHistory((prev) => {
+                const currentDay = getOrCreateDay(prev, userId, date)
+
+                const meals = currentDay.meals.map((meal) =>
+                    meal.id === updated.id
+                        ? { ...updated, user_id: userId }
+                        : meal
+                )
+
+                return {
+                    ...prev,
+                    [date]: createDailyProgress(userId, date, meals),
+                }
+            })
+        },
+        [userId]
+    )
+
+    const deleteMeal = useCallback(
+        (date: string, id: string) => {
+            if (!userId) return
+
+            setHistory((prev) => {
+                const currentDay = getOrCreateDay(prev, userId, date)
+
+                return {
+                    ...prev,
+                    [date]: createDailyProgress(
+                        userId,
+                        date,
+                        currentDay.meals.filter((m) => m.id !== id)
+                    ),
+                }
+            })
+        },
+        [userId]
+    )
+
+    const resetDay = useCallback(
+        (date: string) => {
+            if (!userId) return
+
+            setHistory((prev) => ({
+                ...prev,
+                [date]: createEmptyDailyProgress(userId, date),
+            }))
+        },
+        [userId]
+    )
+
+    useEffect(() => {
+        if (!userId) return
+
+        localStorage.setItem(
+            getUserScopedKey(DAILY_PROGRESS_KEY, userId),
+            JSON.stringify(history)
+        )
+    }, [history, userId])
 
     return useMemo(
         () => ({
@@ -184,7 +235,7 @@ export function useMealDataValue(): MealDataContextValue {
             resetDay,
             recalcTotals,
         }),
-        [addMeal, deleteMeal, editMeal, getDay, history, resetDay]
+        [history, getDay, addMeal, editMeal, deleteMeal, resetDay]
     )
 }
 

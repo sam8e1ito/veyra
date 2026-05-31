@@ -1,12 +1,13 @@
 import { Navigate, useLocation } from 'react-router-dom'
-import { ONBOARDING_DONE_KEY, getUserScopedKey } from '@/constants/localStorage'
 import { useAuth } from '@/hooks/useAuth'
 
-type ProtectedRouteProps = {
+type AuthenticatedRouteProps = {
     children: React.ReactNode
 }
 
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+export default function AuthenticatedRoute({
+    children,
+}: AuthenticatedRouteProps) {
     const { user, loading } = useAuth()
     const location = useLocation()
 
@@ -16,14 +17,6 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
     if (!user) {
         return <Navigate to="/login" replace state={{ from: location }} />
-    }
-
-    const done = localStorage.getItem(
-        getUserScopedKey(ONBOARDING_DONE_KEY, user.id)
-    )
-
-    if (done !== 'true') {
-        return <Navigate to="/welcome" replace />
     }
 
     return children

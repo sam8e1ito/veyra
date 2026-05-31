@@ -5,6 +5,7 @@ import { useMealDate } from '@/hooks/useMealDate'
 import { useMealUI } from '@/app/contexts/MealUIContext'
 import { useMealData } from '@/app/contexts/MealDataContext'
 import type { Meal } from '@/types/macros.types'
+import { LOCAL_USER_ID } from '@/constants/localStorage'
 import toast from 'react-hot-toast'
 
 type MealFormState = {
@@ -71,6 +72,7 @@ function MealFormFields({ meal }: { meal: Meal | null }) {
                     fats: form.fats,
                     createdAt: meal?.createdAt ?? Date.now(),
                     id: meal?.id ?? crypto.randomUUID(),
+                    user_id: meal?.user_id ?? LOCAL_USER_ID,
                 }
 
                 if (isEditing) {
@@ -129,9 +131,11 @@ function MealFormFields({ meal }: { meal: Meal | null }) {
                 type="submit"
                 disabled={!title}
                 onClick={() => {
-                    isEditing
-                        ? toast.success('Meal edited succesfully.')
-                        : toast.success('Meal added succesfully.')
+                    if (isEditing) {
+                        toast.success('Meal edited succesfully.')
+                    } else {
+                        toast.success('Meal added succesfully.')
+                    }
                 }}
             >
                 {isEditing ? 'Edit Meal' : 'Add Meal'}

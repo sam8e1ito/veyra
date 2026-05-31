@@ -1,8 +1,8 @@
 import Card from '@/components/Card'
-import { useUser } from '@/hooks/useUser'
+import { useProfile } from '@/hooks/useProfile'
 
 export default function Trainings() {
-    const { splitLabel } = useUser()
+    const { splitLabel } = useProfile()
     return (
         <>
             <Card title="Your current split is">

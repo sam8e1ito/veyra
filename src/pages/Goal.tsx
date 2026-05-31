@@ -1,12 +1,12 @@
 import Question from '@/components/Question'
 import Input from '@/components/Input'
-import { useUser } from '@/hooks/useUser'
+import { useProfile } from '@/hooks/useProfile'
 import toast from 'react-hot-toast'
 
 export default function Goal() {
-    const { user, setUser } = useUser()
+    const { profile, setProfile } = useProfile()
 
-    if (!user) return null
+    if (!profile) return null
 
     return (
         <Question question="What is your goal?">
@@ -15,11 +15,11 @@ export default function Goal() {
                 name="goal"
                 value="build_muscle"
                 label="Build Muscle"
-                checked={user.goal === 'build_muscle'}
+                checked={profile.goal === 'build_muscle'}
                 onChange={(e) => {
-                    setUser({
-                        ...user,
-                        goal: e.target.value as typeof user.goal,
+                    setProfile({
+                        ...profile,
+                        goal: e.target.value as typeof profile.goal,
                     })
                     toast.success('New goal saved.')
                 }}
@@ -29,11 +29,11 @@ export default function Goal() {
                 name="goal"
                 value="lose_fat"
                 label="Lose Fat"
-                checked={user.goal === 'lose_fat'}
+                checked={profile.goal === 'lose_fat'}
                 onChange={(e) => {
-                    setUser({
-                        ...user,
-                        goal: e.target.value as typeof user.goal,
+                    setProfile({
+                        ...profile,
+                        goal: e.target.value as typeof profile.goal,
                     })
                     toast.success('New goal saved.')
                 }}
@@ -43,11 +43,11 @@ export default function Goal() {
                 name="goal"
                 value="increase_strength"
                 label="Increase Strength"
-                checked={user.goal === 'increase_strength'}
+                checked={profile.goal === 'increase_strength'}
                 onChange={(e) => {
-                    setUser({
-                        ...user,
-                        goal: e.target.value as typeof user.goal,
+                    setProfile({
+                        ...profile,
+                        goal: e.target.value as typeof profile.goal,
                     })
                     toast.success('New goal saved.')
                 }}
@@ -57,11 +57,11 @@ export default function Goal() {
                 name="goal"
                 value="stay_fit"
                 label="Stay fit & healthy"
-                checked={user.goal === 'stay_fit'}
+                checked={profile.goal === 'stay_fit'}
                 onChange={(e) => {
-                    setUser({
-                        ...user,
-                        goal: e.target.value as typeof user.goal,
+                    setProfile({
+                        ...profile,
+                        goal: e.target.value as typeof profile.goal,
                     })
                     toast.success('New goal saved.')
                 }}
