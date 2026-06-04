@@ -5,9 +5,7 @@ type AuthenticatedRouteProps = {
     children: React.ReactNode
 }
 
-export default function AuthenticatedRoute({
-    children,
-}: AuthenticatedRouteProps) {
+export default function RequireAuth({ children }: AuthenticatedRouteProps) {
     const { user, loading } = useAuth()
     const location = useLocation()
 

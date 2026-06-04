@@ -1,5 +1,3 @@
-import type { Split } from './types'
-
 export type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'very_active'
 
 export type Goal =
@@ -10,14 +8,11 @@ export type Goal =
 
 export type Gender = 'male' | 'female'
 
-export type TrainingFrequency = '1-2' | '3-4' | '5+'
-
 export type OnboardingData = {
     user_id: string | null
     goal: Goal | null
     activityLevel: ActivityLevel | null
-    trainingFrequency: TrainingFrequency | null
-    splitType: Split | null
+    trainingFrequency: number | null
 
     heightCm: number | null
     weightKg: number | null

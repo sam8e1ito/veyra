@@ -1,50 +1,18 @@
-import { useState } from 'react'
-import { useAuth } from './useAuth'
-import { ONBOARDING_DATA_KEY, getUserScopedKey } from '@/constants/localStorage'
-import type { UserData } from '@/types/types'
+import { useContext } from 'react'
+import { ProfileContext } from '@/app/contexts/ProfileContext'
 import { SplitLabel } from '@/data/splitLabel'
 
-function getUserFromStorage(userId: string): UserData | null {
-    const scopedKey = getUserScopedKey(ONBOARDING_DATA_KEY, userId)
-    const raw = localStorage.getItem(scopedKey)
-    if (!raw) return null
-
-    try {
-        return JSON.parse(raw)
-    } catch {
-        return null
-    }
-}
-
 export function useProfile() {
-    const { user } = useAuth()
+    const ctx = useContext(ProfileContext)
 
-    const [profile, setProfileState] = useState<UserData | null>(() => {
-        if (!user) return null
-        return getUserFromStorage(user.id)
-    })
-
-    function setProfile(data: UserData) {
-        if (!user) return
-
-        const owned = {
-            ...data,
-            user_id: user.id,
-        }
-
-        setProfileState(owned)
-
-        localStorage.setItem(
-            getUserScopedKey(ONBOARDING_DATA_KEY, user.id),
-            JSON.stringify(owned)
-        )
+    if (!ctx) {
+        throw new Error('useProfile must be used inside ProfileProvider')
     }
 
-    const splitLabel = profile ? SplitLabel[profile.splitType] : null
+    const splitLabel = ctx.profile ? SplitLabel[ctx.profile.splitType] : null
 
     return {
-        profile,
-        setProfile,
+        ...ctx,
         splitLabel,
     }
 }

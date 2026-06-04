@@ -1,6 +1,7 @@
 import Question from '@/components/Question'
 import Input from '@/components/Input'
 import type { OnboardingData } from '@/types/onboarding.types'
+import { TRAINING_FREQUENCY_OPTIONS } from '@/utils/split'
 
 type TrainingFrequencyProps = {
     data: OnboardingData
@@ -13,45 +14,19 @@ export default function TrainingFrequency({
 }: TrainingFrequencyProps) {
     return (
         <Question question="How many days a week do you train?">
-            <Input
-                type="radio"
-                name="trainingFrequency"
-                value="1-2"
-                label="1-2 times a week"
-                checked={data.trainingFrequency === '1-2'}
-                onChange={(e) =>
-                    update({
-                        trainingFrequency: e.target
-                            .value as OnboardingData['trainingFrequency'],
-                    })
-                }
-            />
-            <Input
-                type="radio"
-                name="trainingFrequency"
-                value="3-4"
-                label="3-4 times a week"
-                checked={data.trainingFrequency === '3-4'}
-                onChange={(e) =>
-                    update({
-                        trainingFrequency: e.target
-                            .value as OnboardingData['trainingFrequency'],
-                    })
-                }
-            />
-            <Input
-                type="radio"
-                name="trainingFrequency"
-                value="5+"
-                label="5+ times a week"
-                checked={data.trainingFrequency === '5+'}
-                onChange={(e) =>
-                    update({
-                        trainingFrequency: e.target
-                            .value as OnboardingData['trainingFrequency'],
-                    })
-                }
-            />
+            {TRAINING_FREQUENCY_OPTIONS.map((option) => (
+                <Input
+                    key={option.value}
+                    type="radio"
+                    name="trainingFrequency"
+                    value={String(option.value)}
+                    label={option.label}
+                    checked={data.trainingFrequency === option.value}
+                    onChange={() =>
+                        update({ trainingFrequency: option.value })
+                    }
+                />
+            ))}
         </Question>
     )
 }

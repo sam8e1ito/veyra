@@ -1,23 +1,31 @@
 import type { UserData } from '@/types/types'
 import type { OnboardingData } from '@/types/onboarding.types'
-import { LOCAL_USER_ID } from '@/constants/localStorage'
+import { getSplitType } from '@/utils/split'
 
-export function assertUserData(
-    data: OnboardingData,
-    userId = LOCAL_USER_ID
-): UserData {
+export function assertUserData(data: OnboardingData, userId: string): UserData {
     if (
         !data.goal ||
         !data.activityLevel ||
-        !data.trainingFrequency ||
-        !data.splitType ||
-        !data.gender
+        data.trainingFrequency == null ||
+        !data.gender ||
+        data.heightCm == null ||
+        data.weightKg == null ||
+        data.age == null
     ) {
         throw new Error('Incomplete onboarding data')
     }
 
+    const trainingFrequency = data.trainingFrequency
+
     return {
-        ...data,
-        user_id: data.user_id ?? userId,
-    } as UserData
+        user_id: userId,
+        goal: data.goal,
+        activityLevel: data.activityLevel,
+        trainingFrequency,
+        splitType: getSplitType(trainingFrequency),
+        heightCm: data.heightCm,
+        weightKg: data.weightKg,
+        gender: data.gender,
+        age: data.age,
+    }
 }

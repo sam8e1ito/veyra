@@ -6,236 +6,176 @@ import {
     useMemo,
     useState,
 } from 'react'
-import { DAILY_PROGRESS_KEY, getUserScopedKey } from '@/constants/localStorage'
-import type { Meal } from '@/types/macros.types'
-import type { DailyProgress } from '@/types/DailyProgress.types'
-import { getDateKey } from '@/utils/date'
-import {
-    createEmptyDailyProgress,
-    createDailyProgress,
-    getOrCreateDay,
-    recalcTotals,
-    type MealTotals,
-    type ProgressHistory,
-} from '@/utils/dailyProgress'
-import { useAuth } from '@/hooks/useAuth'
 
-export type MealDataContextValue = {
-    history: ProgressHistory
-    getDay: (date: string) => DailyProgress
-    addMeal: (date: string, meal: Meal) => void
-    editMeal: (date: string, meal: Meal) => void
-    deleteMeal: (date: string, id: string) => void
-    resetDay: (date: string) => void
-    recalcTotals: (meals: Meal[]) => MealTotals
+import type { Meal } from '@/types/macros.types'
+import { useAuth } from '@/hooks/useAuth'
+import { fromMealRow } from '@/lib/meals/mapMeal'
+import type { MealRow } from '@/types/macros.types'
+import {
+    createMeal as createMealService,
+    deleteMeal as deleteMealService,
+    getMeals,
+    toMealInsert,
+    updateMeal as updateMealService,
+} from '@/services/meals'
+import { recalcTotals, type MealTotals } from '@/utils/mealTotals'
+
+export type CreateMealInput = {
+    date: string
+    title: string
+    calories: number
+    protein: number
+    carbs: number
+    fats: number
+}
+
+type MealDataContextValue = {
+    meals: Meal[]
+    loading: boolean
+    getMealsByDate: (date: string) => Meal[]
+    getTotalsByDate: (date: string) => MealTotals
+    getDates: () => string[]
+    createMeal: (input: CreateMealInput) => Promise<void>
+    updateMeal: (meal: Meal) => Promise<void>
+    deleteMeal: (id: string) => Promise<void>
 }
 
 export const MealDataContext = createContext<MealDataContextValue | null>(null)
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-    return typeof value === 'object' && value !== null && !Array.isArray(value)
-}
-
-function isFiniteNumber(value: unknown): value is number {
-    return typeof value === 'number' && Number.isFinite(value)
-}
-
-function parseMeal(value: unknown, userId: string): Meal | null {
-    if (!isRecord(value)) return null
-
-    if (
-        typeof value.id !== 'string' ||
-        typeof value.title !== 'string' ||
-        !isFiniteNumber(value.calories) ||
-        !isFiniteNumber(value.protein) ||
-        !isFiniteNumber(value.carbs) ||
-        !isFiniteNumber(value.fats)
-    ) {
-        return null
-    }
-
-    const mealUserId =
-        typeof value.user_id === 'string' ? value.user_id : userId
-
-    if (mealUserId !== userId) return null
-
-    return {
-        id: value.id,
-        user_id: mealUserId,
-        title: value.title,
-        calories: value.calories,
-        protein: value.protein,
-        carbs: value.carbs,
-        fats: value.fats,
-        createdAt: isFiniteNumber(value.createdAt) ? value.createdAt : 0,
-    }
-}
-
-function parseDailyProgress(
-    value: unknown,
-    userId: string,
-    date: string
-): DailyProgress | null {
-    if (!isRecord(value) || !Array.isArray(value.meals)) return null
-
-    const progressUserId =
-        typeof value.user_id === 'string' ? value.user_id : userId
-
-    if (progressUserId !== userId) return null
-
-    const meals = value.meals.reduce<Meal[]>((acc, meal) => {
-        const parsed = parseMeal(meal, userId)
-        if (parsed) acc.push(parsed)
-        return acc
-    }, [])
-
-    return createDailyProgress(userId, date, meals)
-}
-
-function loadHistory(userId: string): ProgressHistory {
-    const raw =
-        localStorage.getItem(getUserScopedKey(DAILY_PROGRESS_KEY, userId)) ??
-        localStorage.getItem(DAILY_PROGRESS_KEY)
-
-    if (!raw) return {}
-
-    try {
-        const parsed: unknown = JSON.parse(raw)
-        const today = getDateKey()
-
-        const legacyDay = parseDailyProgress(parsed, userId, today)
-        if (legacyDay) return { [today]: legacyDay }
-
-        if (!isRecord(parsed)) return {}
-
-        return Object.entries(parsed).reduce<ProgressHistory>(
-            (history, [date, progress]) => {
-                const day = parseDailyProgress(progress, userId, date)
-                if (day) history[date] = day
-                return history
-            },
-            {}
-        )
-    } catch {
-        return {}
-    }
-}
-
 export function useMealDataValue(): MealDataContextValue {
     const { user } = useAuth()
-
     const userId = user?.id
 
-    const [history, setHistory] = useState<ProgressHistory>({})
+    const [mealsByUser, setMealsByUser] = useState<{
+        userId: string
+        meals: Meal[]
+    } | null>(null)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         if (!userId) return
 
-        const loaded = loadHistory(userId)
-        setHistory(loaded)
+        let cancelled = false
+
+        async function load() {
+            setLoading(true)
+
+            const { data, error } = await getMeals(userId!)
+
+            if (cancelled) return
+
+            if (error) {
+                console.error('Failed to load meals:', error)
+                setMealsByUser({ userId: userId!, meals: [] })
+                setLoading(false)
+                return
+            }
+
+            setMealsByUser({
+                userId: userId!,
+                meals: (data ?? []).map((row) => fromMealRow(row as MealRow)),
+            })
+            setLoading(false)
+        }
+
+        load()
+
+        return () => {
+            cancelled = true
+        }
     }, [userId])
 
-    const getDay = useCallback(
-        (date: string): DailyProgress => {
-            if (!userId) return createEmptyDailyProgress('', date)
-            return getOrCreateDay(history, userId, date)
-        },
-        [history, userId]
+    const meals = useMemo(
+        () =>
+            userId && mealsByUser?.userId === userId ? mealsByUser.meals : [],
+        [userId, mealsByUser]
+    )
+    const isLoading = Boolean(userId) && loading
+
+    const getMealsByDate = useCallback(
+        (date: string) => meals.filter((meal) => meal.date === date),
+        [meals]
     )
 
-    const addMeal = useCallback(
-        (date: string, meal: Meal) => {
-            if (!userId) return
-
-            setHistory((prev) => {
-                const currentDay = getOrCreateDay(prev, userId, date)
-
-                return {
-                    ...prev,
-                    [date]: createDailyProgress(userId, date, [
-                        ...currentDay.meals,
-                        { ...meal, user_id: userId },
-                    ]),
-                }
-            })
-        },
-        [userId]
+    const getTotalsByDate = useCallback(
+        (date: string) => recalcTotals(getMealsByDate(date)),
+        [getMealsByDate]
     )
 
-    const editMeal = useCallback(
-        (date: string, updated: Meal) => {
-            if (!userId) return
-
-            setHistory((prev) => {
-                const currentDay = getOrCreateDay(prev, userId, date)
-
-                const meals = currentDay.meals.map((meal) =>
-                    meal.id === updated.id
-                        ? { ...updated, user_id: userId }
-                        : meal
-                )
-
-                return {
-                    ...prev,
-                    [date]: createDailyProgress(userId, date, meals),
-                }
-            })
-        },
-        [userId]
+    const getDates = useCallback(
+        () => [...new Set(meals.map((meal) => meal.date))].sort(),
+        [meals]
     )
 
-    const deleteMeal = useCallback(
-        (date: string, id: string) => {
+    const createMeal = useCallback(
+        async (input: CreateMealInput) => {
             if (!userId) return
 
-            setHistory((prev) => {
-                const currentDay = getOrCreateDay(prev, userId, date)
-
-                return {
-                    ...prev,
-                    [date]: createDailyProgress(
-                        userId,
-                        date,
-                        currentDay.meals.filter((m) => m.id !== id)
-                    ),
-                }
-            })
-        },
-        [userId]
-    )
-
-    const resetDay = useCallback(
-        (date: string) => {
-            if (!userId) return
-
-            setHistory((prev) => ({
-                ...prev,
-                [date]: createEmptyDailyProgress(userId, date),
+            const created = await createMealService(toMealInsert(userId, input))
+            setMealsByUser((prev) => ({
+                userId: userId!,
+                meals: prev ? [...prev.meals, created] : [created],
             }))
         },
         [userId]
     )
 
-    useEffect(() => {
-        if (!userId) return
+    const updateMeal = useCallback(async (meal: Meal) => {
+        const updated = await updateMealService(meal).catch((err) => {
+            console.error(err)
+            return null
+        })
 
-        localStorage.setItem(
-            getUserScopedKey(DAILY_PROGRESS_KEY, userId),
-            JSON.stringify(history)
+        if (!updated) return
+        setMealsByUser((prev) =>
+            prev
+                ? {
+                      ...prev,
+                      meals: prev.meals.map((item) =>
+                          item.id === updated.id ? updated : item
+                      ),
+                  }
+                : prev
         )
-    }, [history, userId])
+    }, [])
+
+    const deleteMeal = useCallback(async (id: string) => {
+        try {
+            await deleteMealService(id)
+            setMealsByUser((prev) =>
+                prev
+                    ? {
+                          ...prev,
+                          meals: prev.meals.filter((meal) => meal.id !== id),
+                      }
+                    : prev
+            )
+        } catch (err) {
+            console.error(err)
+        }
+    }, [])
 
     return useMemo(
         () => ({
-            history,
-            getDay,
-            addMeal,
-            editMeal,
+            meals,
+            loading: isLoading,
+            getMealsByDate,
+            getTotalsByDate,
+            getDates,
+            createMeal,
+            updateMeal,
             deleteMeal,
-            resetDay,
-            recalcTotals,
         }),
-        [history, getDay, addMeal, editMeal, deleteMeal, resetDay]
+        [
+            meals,
+            isLoading,
+            getMealsByDate,
+            getTotalsByDate,
+            getDates,
+            createMeal,
+            updateMeal,
+            deleteMeal,
+        ]
     )
 }
 

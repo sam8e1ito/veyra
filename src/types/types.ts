@@ -1,9 +1,4 @@
-import type {
-    ActivityLevel,
-    Gender,
-    Goal,
-    TrainingFrequency,
-} from './onboarding.types'
+import type { ActivityLevel, Gender, Goal } from './onboarding.types'
 
 export type Page = 'dashboard' | 'meals' | 'settings' | 'goal' | 'trainings'
 
@@ -19,7 +14,9 @@ export type UserData = {
     user_id: string
     goal: Goal
     activityLevel: ActivityLevel
-    trainingFrequency: TrainingFrequency
+    /** Sessions per week (integer stored in DB). */
+    trainingFrequency: number
+    /** Derived from trainingFrequency via getSplitType — not stored as UI strings in DB. */
     splitType: Split
 
     heightCm: number

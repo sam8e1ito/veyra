@@ -7,20 +7,27 @@ export default function Navbar() {
 
     const isMealsPage = pathname === '/meals'
 
-    const links = ['dashboard', 'meals', 'settings', 'goal', 'trainings']
+    const links = [
+        { label: 'dashboard', to: '/' },
+        { label: 'meals', to: '/meals' },
+        { label: 'settings', to: '/settings' },
+        { label: 'goal', to: '/goal' },
+        { label: 'trainings', to: '/trainings' },
+    ]
 
     return (
         <nav className="navbar">
-            {links.map((link) => {
-                const isMeals = link === 'meals'
+            {links.map(({ label, to }) => {
+                const isMeals = label === 'meals'
 
                 return (
                     <NavLink
-                        key={link}
-                        to={'/' + link}
+                        key={label}
+                        to={to}
                         className={({ isActive }) =>
                             isActive ? 'nav_link-active' : 'nav_link'
                         }
+                        end={to === '/'}
                     >
                         {isMeals && isMealsPage ? (
                             <button
@@ -34,7 +41,7 @@ export default function Navbar() {
                                 +
                             </button>
                         ) : (
-                            link
+                            label
                         )}
                     </NavLink>
                 )

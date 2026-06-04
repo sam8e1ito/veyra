@@ -12,8 +12,8 @@ import Goal from '@/pages/Goal'
 import Settings from '@/pages/Settings'
 import Login from '@/pages/Login'
 
-import ProtectedRoute from './ProtectedRoute'
-import AuthenticatedRoute from './AuthenticatedRoute'
+import ProfileGate from './ProfileGate'
+import RequireAuth from './RequireAuth'
 import Register from '@/pages/Register'
 
 export const router = createBrowserRouter([
@@ -28,25 +28,25 @@ export const router = createBrowserRouter([
     {
         path: '/welcome',
         element: (
-            <AuthenticatedRoute>
+            <RequireAuth>
                 <Welcome />
-            </AuthenticatedRoute>
+            </RequireAuth>
         ),
     },
     {
         path: '/onboarding',
         element: (
-            <AuthenticatedRoute>
+            <RequireAuth>
                 <OnboardingFlow />
-            </AuthenticatedRoute>
+            </RequireAuth>
         ),
     },
 
     {
         element: (
-            <ProtectedRoute>
+            <ProfileGate>
                 <AppLayout />
-            </ProtectedRoute>
+            </ProfileGate>
         ),
         children: [
             { path: '/', element: <Dashboard /> },

@@ -11,11 +11,9 @@ export default function Meals() {
         useMealUI()
     const { selectedDate, setSelectedDate } = useMealDate()
 
-    const { history, getDay, deleteMeal } = useMealData()
-    const dates = Array.from(
-        new Set([...Object.keys(history), selectedDate])
-    ).sort()
-    const day = getDay(selectedDate)
+    const { getMealsByDate, getDates, deleteMeal } = useMealData()
+    const dates = [...new Set([...getDates(), selectedDate])].sort()
+    const dayMeals = getMealsByDate(selectedDate)
     const currentIndex = dates.indexOf(selectedDate)
 
     const goPrevious = () => {
@@ -53,8 +51,8 @@ export default function Meals() {
                     </div>
                 }
             >
-                {day.meals.length > 0 ? (
-                    day.meals.map((meal) => (
+                {dayMeals.length > 0 ? (
+                    dayMeals.map((meal) => (
                         <Card title={meal.title} key={meal.id}>
                             <p style={{ display: 'block' }}>
                                 Calories: {meal.calories}kcal
@@ -93,9 +91,9 @@ export default function Meals() {
                                     </button>
 
                                     <button
-                                        onClick={(e) => {
+                                        onClick={async (e) => {
                                             e.stopPropagation()
-                                            deleteMeal(selectedDate, meal.id)
+                                            await deleteMeal(meal.id)
                                             clearMealUIForMeal(meal.id)
 
                                             toast.success(

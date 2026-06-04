@@ -5,23 +5,36 @@ import { useState } from 'react'
 import Input from '@/components/Input'
 import { useProfile } from '@/hooks/useProfile'
 import Select from '@/components/Select'
+import { upsertProfile } from '@/lib/profile/profileService'
+import toast from 'react-hot-toast'
 
 export default function Settings() {
-    const { signOut } = useAuth()
+    const { user, signOut } = useAuth()
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
     const { profile, setProfile } = useProfile()
 
-    if (!profile) return null
+    if (!profile || !user) return null
 
     async function handleSave(e: React.SubmitEvent) {
         e.preventDefault()
+        if (!profile || !user) return
 
         setLoading(true)
+        setError(null)
 
-        // TODO: update in db
+        const { error: saveError } = await upsertProfile(user.id, profile)
+
+        setLoading(false)
+
+        if (saveError) {
+            setError('Could not save settings. Please try again.')
+            return
+        }
+
+        toast.success('Settings saved.')
     }
 
     async function handleSignOut() {
@@ -29,10 +42,15 @@ export default function Settings() {
         setError(null)
 
         try {
-            signOut()
+            await signOut()
             navigate('/login')
-        } catch (err: any) {
-            setError(err.message)
+        } catch (err) {
+            console.error('Sign out failed:', err)
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : 'Could not sign out. Please try again.'
+            )
         } finally {
             setLoading(false)
         }
@@ -90,7 +108,9 @@ export default function Settings() {
                     }}
                 />
 
-                <Button type="submit">Save</Button>
+                <Button type="submit" disabled={loading}>
+                    {loading ? 'Saving...' : 'Save'}
+                </Button>
             </form>
             <Button onClick={handleSignOut} disabled={loading}>
                 Sign Out

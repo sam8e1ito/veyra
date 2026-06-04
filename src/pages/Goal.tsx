@@ -1,12 +1,32 @@
 import Question from '@/components/Question'
 import Input from '@/components/Input'
 import { useProfile } from '@/hooks/useProfile'
+import { useAuth } from '@/hooks/useAuth'
+import { upsertProfile } from '@/lib/profile/profileService'
 import toast from 'react-hot-toast'
 
 export default function Goal() {
+    const { user } = useAuth()
     const { profile, setProfile } = useProfile()
 
-    if (!profile) return null
+    if (!profile || !user) return null
+
+    const currentProfile = profile
+    const userId = user.id
+
+    async function updateGoal(goal: typeof currentProfile.goal) {
+        const updated: typeof currentProfile = { ...currentProfile, goal }
+        setProfile(updated)
+
+        const { error } = await upsertProfile(userId, updated)
+
+        if (error) {
+            toast.error('Could not save your goal. Please try again.')
+            return
+        }
+
+        toast.success('New goal saved.')
+    }
 
     return (
         <Question question="What is your goal?">
@@ -16,13 +36,7 @@ export default function Goal() {
                 value="build_muscle"
                 label="Build Muscle"
                 checked={profile.goal === 'build_muscle'}
-                onChange={(e) => {
-                    setProfile({
-                        ...profile,
-                        goal: e.target.value as typeof profile.goal,
-                    })
-                    toast.success('New goal saved.')
-                }}
+                onChange={() => updateGoal('build_muscle')}
             />
             <Input
                 type="radio"
@@ -30,13 +44,7 @@ export default function Goal() {
                 value="lose_fat"
                 label="Lose Fat"
                 checked={profile.goal === 'lose_fat'}
-                onChange={(e) => {
-                    setProfile({
-                        ...profile,
-                        goal: e.target.value as typeof profile.goal,
-                    })
-                    toast.success('New goal saved.')
-                }}
+                onChange={() => updateGoal('lose_fat')}
             />
             <Input
                 type="radio"
@@ -44,13 +52,7 @@ export default function Goal() {
                 value="increase_strength"
                 label="Increase Strength"
                 checked={profile.goal === 'increase_strength'}
-                onChange={(e) => {
-                    setProfile({
-                        ...profile,
-                        goal: e.target.value as typeof profile.goal,
-                    })
-                    toast.success('New goal saved.')
-                }}
+                onChange={() => updateGoal('increase_strength')}
             />
             <Input
                 type="radio"
@@ -58,13 +60,7 @@ export default function Goal() {
                 value="stay_fit"
                 label="Stay fit & healthy"
                 checked={profile.goal === 'stay_fit'}
-                onChange={(e) => {
-                    setProfile({
-                        ...profile,
-                        goal: e.target.value as typeof profile.goal,
-                    })
-                    toast.success('New goal saved.')
-                }}
+                onChange={() => updateGoal('stay_fit')}
             />
         </Question>
     )

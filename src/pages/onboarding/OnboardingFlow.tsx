@@ -1,20 +1,21 @@
-import { ONBOARDING_DONE_KEY, getUserScopedKey } from '@/constants/localStorage'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { steps } from './steps'
-import type { UserData } from '@/types/types'
 import { useNavigate } from 'react-router-dom'
 import Button from '@/components/Button'
 import type { OnboardingData } from '@/types/onboarding.types'
-import { getRecommendedSplit } from '@/utils/split'
 import { isStepValid } from './validation'
 import { useProfile } from '@/hooks/useProfile'
 import { useAuth } from '@/hooks/useAuth'
+import { upsertProfile } from '@/lib/profile/profileService'
+import { assertUserData } from '@/utils/user'
+import toast from 'react-hot-toast'
 
 export default function OnboardingFlow() {
     const { user } = useAuth()
-    const { setProfile } = useProfile()
+    const { profile, loading: profileLoading, setProfile } = useProfile()
 
     const [step, setStep] = useState(0)
+    const [saving, setSaving] = useState(false)
 
     const navigate = useNavigate()
 
@@ -23,7 +24,6 @@ export default function OnboardingFlow() {
         goal: null,
         activityLevel: null,
         trainingFrequency: null,
-        splitType: null,
 
         heightCm: null,
         weightKg: null,
@@ -31,57 +31,46 @@ export default function OnboardingFlow() {
         age: null,
     })
 
+    useEffect(() => {
+        if (!profileLoading && profile) {
+            navigate('/', { replace: true })
+        }
+    }, [profile, profileLoading, navigate])
+
     const StepComponent = steps[step]
 
-    function next() {
+    async function next() {
         if (!isStepValid(step, data)) {
-            console.log('error')
             return
         }
 
         if (step < steps.length - 1) {
             setStep(step + 1)
             return
-        } else {
-            if (!user) return
-
-            const freq = data.trainingFrequency
-
-            if (!freq) return
-
-            if (
-                !data.goal ||
-                !data.activityLevel ||
-                !data.gender ||
-                !data.age ||
-                !data.weightKg ||
-                !data.heightCm ||
-                !data.trainingFrequency
-            ) {
-                return
-            }
-
-            const finalData: UserData = {
-                user_id: user.id,
-                goal: data.goal,
-                activityLevel: data.activityLevel,
-                trainingFrequency: data.trainingFrequency,
-                splitType: getRecommendedSplit(data.trainingFrequency),
-
-                heightCm: data.heightCm,
-                weightKg: data.weightKg,
-                gender: data.gender,
-                age: data.age,
-            }
-
-            localStorage.setItem(
-                getUserScopedKey(ONBOARDING_DONE_KEY, finalData.user_id),
-                'true'
-            )
-            setProfile(finalData)
-
-            navigate('/')
         }
+
+        if (!user) return
+
+        let finalData
+        try {
+            finalData = assertUserData(data, user.id)
+        } catch {
+            return
+        }
+
+        setSaving(true)
+
+        const { error } = await upsertProfile(user.id, finalData)
+
+        setSaving(false)
+
+        if (error) {
+            toast.error('Could not save your profile. Please try again.')
+            return
+        }
+
+        setProfile(finalData)
+        navigate('/')
     }
 
     function back() {
@@ -92,14 +81,22 @@ export default function OnboardingFlow() {
         setData((prev) => ({ ...prev, ...fields }))
     }
 
+    if (profileLoading) {
+        return <div>Loading...</div>
+    }
+
     return (
         <div>
             <StepComponent data={data} update={update} />
             <div>
                 {step > 0 && <Button onClick={back}>Back</Button>}
 
-                <Button onClick={next}>
-                    {step === steps.length - 1 ? 'Finish' : 'Continue'}
+                <Button onClick={next} disabled={saving}>
+                    {saving
+                        ? 'Saving...'
+                        : step === steps.length - 1
+                          ? 'Finish'
+                          : 'Continue'}
                 </Button>
             </div>
         </div>

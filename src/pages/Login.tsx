@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { NavLink } from 'react-router-dom'
 import Button from '@/components/Button'
+import { getAuthErrorMessage } from '@/lib/authErrors'
 
 export default function Login() {
     const { signIn } = useAuth()
@@ -21,9 +22,10 @@ export default function Login() {
 
         try {
             await signIn(email, password)
-            navigate('/dashboard')
-        } catch (err: any) {
-            setError(err.message)
+            navigate('/')
+        } catch (err) {
+            console.error('Login failed:', err)
+            setError(getAuthErrorMessage(err))
         } finally {
             setLoading(false)
         }
@@ -47,7 +49,7 @@ export default function Login() {
 
             {error && <p>{error}</p>}
 
-            <Button disabled={loading}>
+            <Button type="submit" disabled={loading}>
                 {loading ? 'Loading...' : 'Login'}
             </Button>
 

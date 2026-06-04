@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import Button from '@/components/Button'
 import Input from '@/components/Input'
 import { NavLink } from 'react-router-dom'
+import { getAuthErrorMessage } from '@/lib/authErrors'
 
 export default function Register() {
     const navigate = useNavigate()
@@ -21,8 +22,9 @@ export default function Register() {
         try {
             await signUp(email, password)
             navigate('/welcome')
-        } catch (err: any) {
-            setError(err.message)
+        } catch (err) {
+            console.error('Registration failed:', err)
+            setError(getAuthErrorMessage(err))
         } finally {
             setLoading(false)
         }
@@ -50,10 +52,10 @@ export default function Register() {
                     <NavLink to="/login">Log in now</NavLink>
                 </p>
             ) : (
-                <p>{error}</p>
+                error && <p>{error}</p>
             )}
 
-            <Button disabled={loading}>
+            <Button type="submit" disabled={loading}>
                 {loading ? 'Loading...' : 'Register'}
             </Button>
         </form>
