@@ -1,0 +1,13 @@
+export type MuscleGroup =
+    | 'chest'
+    | 'lats'
+    | 'upper_back'
+    | 'front_delts'
+    | 'side_delts'
+    | 'biceps'
+    | 'triceps'
+    | 'quads'
+    | 'hamstrings'
+    | 'calves'
+    | 'adductors'
+    | 'erectors'
