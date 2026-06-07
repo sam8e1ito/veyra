@@ -9,6 +9,8 @@ import { useAuth } from '@/hooks/useAuth'
 import { upsertProfile } from '@/lib/profile/profileService'
 import { assertUserData } from '@/utils/user'
 import toast from 'react-hot-toast'
+import { generateTrainingPlan } from '@/lib/trainings/generateTrainingPlan'
+import { getSplitType } from '@/utils/split'
 
 export default function OnboardingFlow() {
     const { user } = useAuth()
@@ -60,17 +62,25 @@ export default function OnboardingFlow() {
 
         setSaving(true)
 
-        const { error } = await upsertProfile(user.id, finalData)
+        try {
+            const { error } = await upsertProfile(user.id, finalData)
 
-        setSaving(false)
+            if (error) throw error
 
-        if (error) {
-            toast.error('Could not save your profile. Please try again.')
-            return
+            await generateTrainingPlan(
+                user.id,
+                getSplitType(finalData.trainingFrequency)
+            )
+
+            setProfile(finalData)
+            toast.success('Profile created successfully.')
+            navigate('/')
+        } catch (error) {
+            console.error(error)
+            toast.error('Something went wrong.')
+        } finally {
+            setSaving(false)
         }
-
-        setProfile(finalData)
-        navigate('/')
     }
 
     function back() {

@@ -42,7 +42,7 @@ export async function generateTrainingPlan(userId: string, split: Split) {
                 const { error } = await supabase.from('workout_sets').insert({
                     exercise_id: ex.id,
                     set_number: s + 1,
-                    target_reps: ex.reps,
+                    target_reps: exercise.reps,
                     target_weight: null,
                 })
 
