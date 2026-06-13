@@ -1,3 +1,5 @@
+import type { MuscleGroup } from './muscles.types'
+
 export type TrainingSet = {
     created_at: string
     exercise_id: string
@@ -10,7 +12,7 @@ export type TrainingSet = {
 export type Exercise = {
     created_at: string
     id: string
-    muscle_group: string
+    muscle_group: MuscleGroup
     name: string
     order_index: number
     workout_plan_id: string

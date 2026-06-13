@@ -1,4 +1,5 @@
 import Card from '@/components/Card'
+import { MuscleGroupLabel } from '@/data/muscleGroupLabel'
 import { useAuth } from '@/hooks/useAuth'
 import { useProfile } from '@/hooks/useProfile'
 import { getTrainingPlan } from '@/services/training'
@@ -51,7 +52,11 @@ export default function Trainings() {
                                                     : 'No weight logged'}
                                             </p>
                                         ))}
-                                        {exercise.muscle_group}
+                                        {
+                                            MuscleGroupLabel[
+                                                exercise.muscle_group
+                                            ]
+                                        }
                                     </Card>
                                 )
                             )}
