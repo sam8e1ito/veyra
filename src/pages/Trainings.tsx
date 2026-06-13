@@ -15,7 +15,6 @@ export default function Trainings() {
         async function loadTrainings() {
             const data = await getTrainingPlan(user ? user.id : '')
             setTrainings(data)
-            console.log(data)
         }
 
         loadTrainings()
@@ -39,9 +38,12 @@ export default function Trainings() {
                         <div>
                             {training.workout_exercises.map(
                                 (exercise: Exercise) => (
-                                    <Card title={exercise.name}>
+                                    <Card
+                                        title={exercise.name}
+                                        key={exercise.id}
+                                    >
                                         {exercise.workout_sets.map((set) => (
-                                            <p>
+                                            <p key={set.id}>
                                                 {set.set_number} -{' '}
                                                 {set.target_reps} -{' '}
                                                 {set.target_weight

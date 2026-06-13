@@ -1,6 +1,5 @@
 import type { Split } from '@/types/types'
 
-/** Canonical values saved when the user picks a frequency bucket in onboarding. */
 export const TRAINING_FREQUENCY_OPTIONS = [
     { label: '1-2 times a week', value: 2 },
     { label: '3-4 times a week', value: 4 },

@@ -7,6 +7,9 @@ import { useProfile } from '@/hooks/useProfile'
 import Select from '@/components/Select'
 import { upsertProfile } from '@/lib/profile/profileService'
 import toast from 'react-hot-toast'
+import { getSplitType } from '@/utils/split'
+import { generateTrainingPlan } from '@/lib/trainings/generateTrainingPlan'
+import { deleteTrainingPlan } from '@/lib/trainings/deleteTrainingPlan'
 
 export default function Settings() {
     const { user, signOut } = useAuth()
@@ -26,6 +29,9 @@ export default function Settings() {
         setError(null)
 
         const { error: saveError } = await upsertProfile(user.id, profile)
+
+        await deleteTrainingPlan(user.id)
+        await generateTrainingPlan(user.id, profile.splitType)
 
         setLoading(false)
 
@@ -104,6 +110,23 @@ export default function Settings() {
                         setProfile({
                             ...profile,
                             age: Number(e.target.value),
+                        })
+                    }}
+                />
+                <Select
+                    label="Trainings a week"
+                    options={[
+                        { label: '1-2', value: String(2) },
+                        { label: '3-4', value: String(4) },
+                        { label: '5+', value: String(5) },
+                    ]}
+                    value={profile.trainingFrequency}
+                    onChange={(e) => {
+                        const frequency = Number(e.target.value)
+                        setProfile({
+                            ...profile,
+                            trainingFrequency: frequency,
+                            splitType: getSplitType(frequency),
                         })
                     }}
                 />
