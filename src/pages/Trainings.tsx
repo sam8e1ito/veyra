@@ -2,6 +2,7 @@ import Card from '@/components/Card'
 import { useAuth } from '@/hooks/useAuth'
 import { useProfile } from '@/hooks/useProfile'
 import { getTrainingPlan } from '@/services/training'
+import type { Exercise, Training } from '@/types/training.types'
 import { useEffect, useState } from 'react'
 
 export default function Trainings() {
@@ -14,6 +15,7 @@ export default function Trainings() {
         async function loadTrainings() {
             const data = await getTrainingPlan(user ? user.id : '')
             setTrainings(data)
+            console.log(data)
         }
 
         loadTrainings()
@@ -25,16 +27,34 @@ export default function Trainings() {
         return <p>Loading...</p>
     }
 
-    const userId = user.id
-
     return (
         <>
             <Card title="Your current split is">
                 <p>{splitLabel}</p>
             </Card>
             <Card title="Your trainings:">
-                {trainings.map((training) => (
-                    <p key={training.id}>{training.name}</p>
+                {trainings.map((training: Training) => (
+                    <div key={training.id}>
+                        <p>{training.name}</p>
+                        <div>
+                            {training.workout_exercises.map(
+                                (exercise: Exercise) => (
+                                    <Card title={exercise.name}>
+                                        {exercise.workout_sets.map((set) => (
+                                            <p>
+                                                {set.set_number} -{' '}
+                                                {set.target_reps} -{' '}
+                                                {set.target_weight
+                                                    ? set.target_weight
+                                                    : 'No weight logged'}
+                                            </p>
+                                        ))}
+                                        {exercise.muscle_group}
+                                    </Card>
+                                )
+                            )}
+                        </div>
+                    </div>
                 ))}
             </Card>
         </>
