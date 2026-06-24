@@ -183,8 +183,8 @@ export const EXERCISES_TEMPLATES: ExerciseTemplate[] = [
 
     // Quads
     {
-        id: 'back_squat',
-        name: 'Back Squat',
+        id: 'squat',
+        name: 'Squat',
         muscle_group: 'quads',
         equipment: 'barbell',
     },
@@ -258,6 +258,22 @@ export const EXERCISES_TEMPLATES: ExerciseTemplate[] = [
         id: 'seated_calf_raise',
         name: 'Seated Calf Raise',
         muscle_group: 'calves',
+        equipment: 'machine',
+    },
+
+    // Adductors
+    {
+        id: 'hip_adduction',
+        name: 'Hip Adduction',
+        muscle_group: 'adductors',
+        equipment: 'machine',
+    },
+
+    // Erectors
+    {
+        id: 'back_extension',
+        name: 'Back Extension',
+        muscle_group: 'erectors',
         equipment: 'machine',
     },
 

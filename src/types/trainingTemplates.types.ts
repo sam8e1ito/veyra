@@ -1,8 +1,7 @@
 import type { MuscleGroup } from './muscles.types'
 
 export interface TemplateExercise {
-    name: string
-    muscle_group: MuscleGroup
+    exercise_id: string
     sets: number
     reps: number
 }

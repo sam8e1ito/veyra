@@ -1,6 +1,11 @@
 import type { Split } from '@/types/types'
 import { TEMPLATES } from './templates'
+import { EXERCISES_TEMPLATES } from './exercises/exercisesTemplates'
 import { supabase } from '../supabase'
+
+const exerciseMap = Object.fromEntries(
+    EXERCISES_TEMPLATES.map((ex) => [ex.id, ex])
+)
 
 export async function generateTrainingPlan(userId: string, split: Split) {
     const keyMap = {
@@ -16,14 +21,24 @@ export async function generateTrainingPlan(userId: string, split: Split) {
 
         const { data: plan, error: planError } = await supabase
             .from('workout_plans')
-            .insert({ user_id: userId, name: workout.name, order_index: i })
+            .insert({
+                user_id: userId,
+                name: workout.name,
+                order_index: i,
+            })
             .select()
             .single()
 
         if (planError) throw planError
 
         for (let j = 0; j < workout.exercises.length; j++) {
-            const exercise = workout.exercises[j]
+            const exerciseRef = workout.exercises[j]
+
+            const exercise = exerciseMap[exerciseRef.exercise_id]
+
+            if (!exercise) {
+                throw new Error(`Exercise ${exerciseRef.exercise_id} not found`)
+            }
 
             const { data: ex, error: exError } = await supabase
                 .from('workout_exercises')
@@ -38,11 +53,11 @@ export async function generateTrainingPlan(userId: string, split: Split) {
 
             if (exError) throw exError
 
-            for (let s = 0; s < exercise.sets; s++) {
+            for (let s = 0; s < exerciseRef.sets; s++) {
                 const { error } = await supabase.from('workout_sets').insert({
                     exercise_id: ex.id,
                     set_number: s + 1,
-                    target_reps: exercise.reps,
+                    target_reps: exerciseRef.reps,
                     target_weight: null,
                 })
 
@@ -50,5 +65,6 @@ export async function generateTrainingPlan(userId: string, split: Split) {
             }
         }
     }
+
     return true
 }
