@@ -4,6 +4,7 @@ export type MuscleGroup =
     | 'upper_back'
     | 'front_delts'
     | 'side_delts'
+    | 'rear_delts'
     | 'biceps'
     | 'triceps'
     | 'quads'
@@ -11,3 +12,5 @@ export type MuscleGroup =
     | 'calves'
     | 'adductors'
     | 'erectors'
+    | 'core'
+    | 'glutes'
