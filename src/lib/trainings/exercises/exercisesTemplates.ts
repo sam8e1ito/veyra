@@ -15,6 +15,12 @@ export const EXERCISES_TEMPLATES: ExerciseTemplate[] = [
         equipment: 'barbell',
     },
     {
+        id: 'incline_dumbbell_press',
+        name: 'Incline Dumbbell Press',
+        muscle_group: 'chest',
+        equipment: 'dumbbells',
+    },
+    {
         id: 'dumbbell_press',
         name: 'Dumbbell Press',
         muscle_group: 'chest',
@@ -69,6 +75,12 @@ export const EXERCISES_TEMPLATES: ExerciseTemplate[] = [
         name: 'Dumbbell Row',
         muscle_group: 'lats',
         equipment: 'dumbbells',
+    },
+    {
+        id: 'low_row',
+        name: 'Low Row (unilateral)',
+        muscle_group: 'lats',
+        equipment: 'machine',
     },
 
     // Upper Back
