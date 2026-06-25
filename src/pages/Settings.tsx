@@ -12,7 +12,7 @@ import { generateTrainingPlan } from '@/lib/trainings/generateTrainingPlan'
 import { deleteTrainingPlan } from '@/lib/trainings/deleteTrainingPlan'
 
 export default function Settings() {
-    const { user, signOut } = useAuth()
+    const { user, signOut, deleteAccount } = useAuth()
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -59,6 +59,27 @@ export default function Settings() {
             )
         } finally {
             setLoading(false)
+        }
+    }
+
+    async function handleDeleteAccount() {
+        setLoading(true)
+        setError(null)
+
+        if (!user) return
+        try {
+            await deleteAccount(user.id)
+            navigate('/login')
+        } catch (err) {
+            console.error('Failed to delete the account: ', err)
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : 'Could not delete the account. Please try again.'
+            )
+        } finally {
+            setLoading(false)
+            navigate('/register')
         }
     }
 
@@ -137,6 +158,9 @@ export default function Settings() {
             </form>
             <Button onClick={handleSignOut} disabled={loading}>
                 Sign Out
+            </Button>
+            <Button onClick={handleDeleteAccount} disabled={loading}>
+                Delete Account
             </Button>
             {error && <p>{error}</p>}
         </>

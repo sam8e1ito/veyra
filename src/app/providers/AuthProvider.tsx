@@ -48,9 +48,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await supabase.auth.signOut()
     }
 
+    async function deleteAccount() {
+        const { data } = await supabase.auth.getSession()
+
+        const token = data.session?.access_token
+
+        await fetch(
+            'https://wuknkbuiavorafmssjxm.functions.supabase.co/delete-account',
+            {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        )
+    }
+
     return (
         <AuthContext.Provider
-            value={{ user, loading, signIn, signUp, signOut }}
+            value={{ user, loading, signIn, signUp, signOut, deleteAccount }}
         >
             {children}
         </AuthContext.Provider>

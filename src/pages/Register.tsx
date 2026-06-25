@@ -58,6 +58,9 @@ export default function Register() {
             <Button type="submit" disabled={loading}>
                 {loading ? 'Loading...' : 'Register'}
             </Button>
+            <p>
+                Already have an account? <NavLink to={'/login'}>Log In</NavLink>
+            </p>
         </form>
     )
 }
