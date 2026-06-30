@@ -162,6 +162,9 @@ export default function Settings() {
             <Button onClick={handleDeleteAccount} disabled={loading}>
                 Delete Account
             </Button>
+            <Button onClick={handleDeleteAccount} disabled={true}>
+                Change Password {/* Will implement later */}
+            </Button>
             {error && <p>{error}</p>}
         </>
     )

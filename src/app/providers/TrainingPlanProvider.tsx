@@ -14,12 +14,17 @@ export function TrainingPlanProvider({
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        if (!user) return
+        if (!user) {
+            setPlan(null)
+            setLoading(false)
+            return
+        }
+        setLoading(true)
 
         const loadPlan = async () => {
             try {
-                const plan = await getTrainingPlan(user.id)
-                setPlan(plan)
+                const data = await getTrainingPlan(user.id)
+                setPlan(data)
             } catch (error) {
                 console.error(error)
             } finally {
@@ -34,6 +39,7 @@ export function TrainingPlanProvider({
         <TrainingPlanContext.Provider
             value={{
                 plan,
+                setPlan,
                 loading,
             }}
         >

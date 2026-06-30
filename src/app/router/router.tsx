@@ -7,7 +7,7 @@ import AppLayout from '@/AppLayout'
 
 import Dashboard from '@/pages/Dashboard'
 import Meals from '@/pages/Meals'
-import Trainings from '@/pages/Trainings'
+import Trainings from '@/pages/trainings/Trainings'
 import Goal from '@/pages/Goal'
 import Settings from '@/pages/Settings'
 import Login from '@/pages/Login'
@@ -15,6 +15,7 @@ import Login from '@/pages/Login'
 import ProfileGate from './ProfileGate'
 import RequireAuth from './RequireAuth'
 import Register from '@/pages/Register'
+import TrainingDetails from '@/pages/trainings/TrainingDetails'
 
 export const router = createBrowserRouter([
     {
@@ -52,6 +53,7 @@ export const router = createBrowserRouter([
             { path: '/', element: <Dashboard /> },
             { path: '/meals', element: <Meals /> },
             { path: '/trainings', element: <Trainings /> },
+            { path: '/trainings/:trainingId', element: <TrainingDetails /> },
             { path: '/goal', element: <Goal /> },
             { path: '/settings', element: <Settings /> },
         ],
