@@ -10,9 +10,20 @@ import toast from 'react-hot-toast'
 import { getSplitType } from '@/utils/split'
 import { generateTrainingPlan } from '@/lib/trainings/generateTrainingPlan'
 import { deleteTrainingPlan } from '@/lib/trainings/deleteTrainingPlan'
+import Modal from '@/components/Modal'
 
 export default function Settings() {
-    const { user, signOut, deleteAccount } = useAuth()
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
+    const [isPasswordModalOpen, setIsPasswordModalOpen] =
+        useState<boolean>(false)
+
+    const [currentPassword, setCurrentPassword] = useState('')
+    const [currentPasswordError, setCurrentPasswordError] = useState('')
+
+    const [newPassword, setNewPassword] = useState('')
+    const [newPasswordError, setNewPasswordError] = useState('')
+
+    const { user, signOut, deleteAccount, changePassword } = useAuth()
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -79,7 +90,53 @@ export default function Settings() {
             )
         } finally {
             setLoading(false)
+            setIsDeleteModalOpen(false)
             navigate('/register')
+        }
+    }
+
+    async function handleChangePassword() {
+        if (!user) return
+
+        setCurrentPasswordError('')
+        setNewPasswordError('')
+
+        if (!currentPassword.trim()) {
+            setCurrentPasswordError('Enter your current password.')
+            return
+        }
+
+        if (newPassword.trim().length < 6) {
+            setNewPasswordError('Password must be at least 6 characters.')
+            return
+        }
+
+        if (currentPassword === newPassword) {
+            setNewPasswordError(
+                'New password must be different from the old password.'
+            )
+            return
+        }
+
+        setLoading(true)
+        setError(null)
+
+        try {
+            await changePassword(currentPassword, newPassword)
+
+            toast.success('Password updated.')
+
+            setCurrentPassword('')
+            setNewPassword('')
+            setIsPasswordModalOpen(false)
+        } catch (err) {
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : 'Could not change password.'
+            )
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -159,12 +216,73 @@ export default function Settings() {
             <Button onClick={handleSignOut} disabled={loading}>
                 Sign Out
             </Button>
-            <Button onClick={handleDeleteAccount} disabled={loading}>
+            <Button
+                onClick={() => setIsDeleteModalOpen(true)}
+                disabled={loading}
+            >
                 Delete Account
             </Button>
-            <Button onClick={handleDeleteAccount} disabled={true}>
-                Change Password {/* Will implement later */}
+            <Modal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+            >
+                <h3>Delete Account?</h3>
+
+                <Button onClick={() => setIsDeleteModalOpen(false)}>
+                    Cancel
+                </Button>
+                <Button onClick={handleDeleteAccount}>Delete</Button>
+            </Modal>
+
+            <Button
+                onClick={() => setIsPasswordModalOpen(true)}
+                disabled={loading}
+            >
+                Change Password
             </Button>
+            <Modal
+                isOpen={isPasswordModalOpen}
+                onClose={() => {
+                    setIsPasswordModalOpen(false)
+                    setNewPassword('')
+                }}
+            >
+                <Input
+                    label="Your Old Password:"
+                    placeholder="..."
+                    type="password"
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    value={currentPassword}
+                    error={currentPasswordError}
+                />
+
+                <Input
+                    label="Your New Password:"
+                    placeholder="Secret13a3..."
+                    type="password"
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    value={newPassword}
+                    error={newPasswordError}
+                />
+
+                <div>
+                    <Button
+                        onClick={() => {
+                            setIsPasswordModalOpen(false)
+                            setNewPassword('')
+                        }}
+                    >
+                        Close
+                    </Button>
+                    <Button
+                        onClick={handleChangePassword}
+                        disabled={loading || newPassword.trim().length < 6}
+                    >
+                        {loading ? 'Saving...' : 'Save'}
+                    </Button>
+                </div>
+            </Modal>
+
             {error && <p>{error}</p>}
         </>
     )

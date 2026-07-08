@@ -8,6 +8,10 @@ export type AuthContextValue = {
     signIn: (email: string, password: string) => Promise<void>
     signOut: () => Promise<void>
     deleteAccount: (id: string) => Promise<void>
+    changePassword: (
+        currentPassword: string,
+        newPassword: string
+    ) => Promise<void>
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null)

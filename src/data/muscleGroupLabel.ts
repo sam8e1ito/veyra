@@ -13,4 +13,7 @@ export const MuscleGroupLabel: Record<MuscleGroup, string> = {
     calves: 'Calves',
     adductors: 'Adductors',
     erectors: 'Erectors',
+    rear_delts: 'Rear Delts',
+    glutes: 'Glutes',
+    core: 'Core'
 }

@@ -11,6 +11,10 @@ export default function TrainingDetails() {
         (training: Training) => training.id === trainingId
     )
 
+    if (!training) {
+        return <p>Loading...</p>
+    }
+
     console.log(trainingId)
 
     return (
