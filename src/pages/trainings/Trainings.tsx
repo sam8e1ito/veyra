@@ -29,13 +29,17 @@ export default function Trainings() {
         return <p>Loading...</p>
     }
 
+    const uniqueTrainings = Array.from(
+        new Map(trainings.map((training) => [training.name, training])).values()
+    )
+
     return (
         <>
             <Card title="Your current split is">
                 <p>{splitLabel}</p>
             </Card>
             <Card title="Your trainings:">
-                {trainings.map((training: Training) => (
+                {uniqueTrainings.map((training: Training) => (
                     <div key={training.id}>
                         <p>{training.name}</p>
                         <Button

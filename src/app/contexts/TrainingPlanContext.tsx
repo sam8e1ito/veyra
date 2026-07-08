@@ -4,6 +4,7 @@ type TrainingPlanContextType = {
     plan: any
     setPlan: React.Dispatch<React.SetStateAction<any[] | null>>
     loading: boolean
+    todaysWorkout: any
 }
 
 export const TrainingPlanContext =

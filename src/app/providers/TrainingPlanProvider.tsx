@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { getTrainingPlan } from '@/services/training'
 import { TrainingPlanContext } from '../contexts/TrainingPlanContext'
+import { getCurrentDayOfWeek } from '@/utils/date'
 
 export function TrainingPlanProvider({
     children,
@@ -12,6 +13,9 @@ export function TrainingPlanProvider({
 
     const [plan, setPlan] = useState<any[] | null>(null)
     const [loading, setLoading] = useState(true)
+    const todaysWorkout = plan?.find(
+        (workout) => workout.day_of_week === getCurrentDayOfWeek()
+    )
 
     useEffect(() => {
         if (!user) {
@@ -41,6 +45,7 @@ export function TrainingPlanProvider({
                 plan,
                 setPlan,
                 loading,
+                todaysWorkout,
             }}
         >
             {children}

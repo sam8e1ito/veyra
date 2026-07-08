@@ -1,10 +1,13 @@
 import { useTrainingPlan } from '@/hooks/useTraining'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import type { Exercise, Training } from '@/types/training.types'
 import Card from '@/components/Card'
 import { MuscleGroupLabel } from '@/data/muscleGroupLabel'
+import Button from '@/components/Button'
 
 export default function TrainingDetails() {
+    const navigate = useNavigate()
+
     const { trainingId } = useParams()
     const { plan } = useTrainingPlan()
     const training = plan.find(
@@ -15,10 +18,10 @@ export default function TrainingDetails() {
         return <p>Loading...</p>
     }
 
-    console.log(trainingId)
-
     return (
         <>
+            <Button onClick={() => navigate('/trainings')}>Back</Button>
+
             <h1>{training.name}</h1>
             <div>
                 {training.workout_exercises.map((exercise: Exercise) => (
