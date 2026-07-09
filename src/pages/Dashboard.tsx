@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom'
 import ProgressBar from '@/components/ProgressBar'
 import Button from '@/components/Button'
 import { useTrainingPlan } from '@/hooks/useTraining'
-import { useEffect } from 'react'
 
 export default function Dashboard() {
     const navigate = useNavigate()

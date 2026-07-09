@@ -16,15 +16,15 @@ import ProfileGate from './ProfileGate'
 import RequireAuth from './RequireAuth'
 import Register from '@/pages/Register'
 import TrainingDetails from '@/pages/trainings/TrainingDetails'
+import AuthLayout from '@/AuthLayout'
 
 export const router = createBrowserRouter([
     {
-        path: '/login',
-        element: <Login />,
-    },
-    {
-        path: '/register',
-        element: <Register />,
+        element: <AuthLayout />,
+        children: [
+            { path: '/login', element: <Login /> },
+            { path: '/register', element: <Register /> },
+        ],
     },
     {
         path: '/welcome',
