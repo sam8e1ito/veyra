@@ -1,16 +1,58 @@
+import clsx from 'clsx'
+
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
     label?: string
     error?: string
 }
 
-export default function Input({ label, error, ...props }: InputProps) {
+export default function Input({
+    label,
+    className,
+    error,
+    type = 'text',
+    checked,
+    ...props
+}: InputProps) {
+    if (type === 'radio') {
+        return (
+            <label
+                className={clsx(
+                    'flex items-center gap-4 rounded-xl border-2 p-4',
+                    checked
+                        ? 'border-accent bg-border-accent'
+                        : 'border-border-accent'
+                )}
+            >
+                <input
+                    type="radio"
+                    checked={checked}
+                    {...props}
+                    className={clsx(
+                        'h-5 w-5 appearance-none rounded-full border border-border-accent p-1 bg-clip-content checked:border-accent checked:bg-accent',
+                        className
+                    )}
+                />
+
+                {label && <span>{label}</span>}
+            </label>
+        )
+    }
+
     return (
-        <label>
-            {label && <div>{label}</div>}
+        <label className="flex flex-col gap-2">
+            {label && <span>{label}</span>}
 
-            <input {...props} />
+            <input
+                type={type}
+                checked={checked}
+                {...props}
+                className={clsx(
+                    'w-full rounded-lg border-2 border-border-accent px-2 py-1 placeholder:text-text-light',
+                    className
+                )}
+            />
 
-            {error && <div>{error}</div>}
+            {error && <span>{error}</span>}
         </label>
     )
 }
