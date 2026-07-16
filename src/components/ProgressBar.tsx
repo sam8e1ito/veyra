@@ -1,36 +1,32 @@
+import clsx from 'clsx'
+
 type ProgressBarProps = {
     current: number
     max: number
+    className?: string
 }
 
-export default function ProgressBar({ current, max }: ProgressBarProps) {
+export default function ProgressBar({
+    current,
+    max,
+    className,
+}: ProgressBarProps) {
     const progress = Math.min((current / max) * 100, 100)
 
     return (
-        <div>
-            <div>
-                {current} / {max}
-            </div>
-
+        <div
+            className={clsx(
+                'w-full h-2.5 bg-gray-300 rounded-[999px] overflow-hidden',
+                className ?? ''
+            )}
+        >
             <div
+                className="h-full bg-accent rounded-[999px]"
                 style={{
-                    width: '100%',
-                    height: '10px',
-                    background: '#e5e7eb',
-                    borderRadius: '999px',
-                    overflow: 'hidden',
+                    width: `${progress}%`,
+                    transition: 'width 0.3s ease',
                 }}
-            >
-                <div
-                    style={{
-                        width: `${progress}%`,
-                        height: '100%',
-                        background: '#22c55e',
-                        borderRadius: '999px',
-                        transition: 'width 0.3s ease',
-                    }}
-                />
-            </div>
+            />
         </div>
     )
 }
