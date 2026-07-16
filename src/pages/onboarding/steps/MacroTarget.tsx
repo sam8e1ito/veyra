@@ -12,19 +12,19 @@ export default function MacroTarget({ data, update }: MacroTargetStepProps) {
     return (
         <Question question="Let's calculate your estimated macro targets">
             <Input
-                label="Height (cm)"
                 type="number"
                 value={data.heightCm ?? ''}
+                placeholder="Height in cm"
                 onChange={(e) => update({ heightCm: Number(e.target.value) })}
             />
             <Input
-                label="Weight (kg)"
                 type="number"
                 value={data.weightKg ?? ''}
+                placeholder="Weight in kg"
                 onChange={(e) => update({ weightKg: Number(e.target.value) })}
             />
             <Select
-                label="Gender"
+                startOption="your gender"
                 options={[
                     { label: 'Male', value: 'male' },
                     { label: 'Female', value: 'female' },
@@ -37,9 +37,9 @@ export default function MacroTarget({ data, update }: MacroTargetStepProps) {
                 }
             />
             <Input
-                label="Age"
                 type="number"
                 value={data.age ?? ''}
+                placeholder="Age"
                 onChange={(e) => update({ age: Number(e.target.value) })}
             />
         </Question>

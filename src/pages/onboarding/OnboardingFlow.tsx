@@ -17,6 +17,7 @@ export default function OnboardingFlow() {
     const { profile, loading: profileLoading, setProfile } = useProfile()
 
     const [step, setStep] = useState(0)
+    const [error, setError] = useState('')
     const [saving, setSaving] = useState(false)
 
     const navigate = useNavigate()
@@ -42,7 +43,9 @@ export default function OnboardingFlow() {
     const StepComponent = steps[step]
 
     async function next() {
+        setError('')
         if (!isStepValid(step, data)) {
+            setError('Fill out all the fields.')
             return
         }
 
@@ -96,12 +99,17 @@ export default function OnboardingFlow() {
     }
 
     return (
-        <div>
+        <div className="flex flex-1 flex-col">
             <StepComponent data={data} update={update} />
-            <div>
-                {step > 0 && <Button onClick={back}>Back</Button>}
+            {error && <div className="text-center">{error}</div>}
+            <div className="mt-auto flex gap-2">
+                {step > 0 && (
+                    <Button className="bg-gray-300" onClick={back}>
+                        Back
+                    </Button>
+                )}
 
-                <Button onClick={next} disabled={saving}>
+                <Button className="mt-auto" onClick={next} disabled={saving}>
                     {saving
                         ? 'Saving...'
                         : step === steps.length - 1
