@@ -18,7 +18,7 @@ export default function AppLayout() {
         <>
             <Navbar />
 
-            <main className="min-h-dvh px-6 pt-20 pb-6 flex flex-col">
+            <main className="min-h-dvh px-6 pt-20 pb-36 flex flex-col">
                 <Outlet />
             </main>
             <Modal isOpen={isMealModalOpen} onClose={closeMealModal}>

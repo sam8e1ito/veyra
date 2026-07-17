@@ -7,6 +7,7 @@ export type TrainingSet = {
     set_number: number
     target_reps: number
     target_weight: number | null
+    isNew?: boolean
 }
 
 export type Exercise = {

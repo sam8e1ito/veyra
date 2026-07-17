@@ -1,9 +1,9 @@
 import { useTrainingPlan } from '@/hooks/useTraining'
 import { useNavigate, useParams } from 'react-router-dom'
-import type { Exercise, Training } from '@/types/training.types'
-import Card from '@/components/Card'
-import { MuscleGroupLabel } from '@/data/muscleGroupLabel'
-import Button from '@/components/Button'
+import type { Training } from '@/types/training.types'
+import TrainingHeader from '@/components/trainingDetails/TrainingHeader'
+import TrainingExerciseList from '@/components/trainingDetails/TrainingExerciseList'
+import { useTrainingEditor } from '@/hooks/useTrainingEditor'
 
 export default function TrainingDetails() {
     const navigate = useNavigate()
@@ -18,26 +18,34 @@ export default function TrainingDetails() {
         return <p>Loading...</p>
     }
 
+    const {
+        editedExercises,
+        isEditing,
+        setIsEditing,
+        updateSet,
+        addSet,
+        removeSet,
+        save,
+    } = useTrainingEditor(training.workout_exercises)
+
     return (
         <>
-            <Button onClick={() => navigate('/trainings')}>Back</Button>
+            <TrainingHeader
+                isEditing={isEditing}
+                onBack={() => navigate('/trainings')}
+                onEdit={() => setIsEditing(true)}
+                onSave={save}
+            />
 
             <h1>{training.name}</h1>
-            <div>
-                {training.workout_exercises.map((exercise: Exercise) => (
-                    <Card title={exercise.name} key={exercise.id}>
-                        {exercise.workout_sets.map((set) => (
-                            <p key={set.id}>
-                                {set.set_number} - {set.target_reps} -{' '}
-                                {set.target_weight
-                                    ? set.target_weight
-                                    : 'No weight logged'}
-                            </p>
-                        ))}
-                        {MuscleGroupLabel[exercise.muscle_group]}
-                    </Card>
-                ))}
-            </div>
+
+            <TrainingExerciseList
+                exercises={editedExercises}
+                isEditing={isEditing}
+                onAddSet={addSet}
+                onChange={updateSet}
+                onRemoveSet={removeSet}
+            />
         </>
     )
 }
