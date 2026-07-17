@@ -1,6 +1,7 @@
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useProfile } from '@/hooks/useProfile'
+import Loading from '@/pages/Loading'
 
 type ProfileGateProps = {
     children: React.ReactNode
@@ -12,7 +13,7 @@ export default function ProfileGate({ children }: ProfileGateProps) {
     const location = useLocation()
 
     if (authLoading || profileLoading) {
-        return <div>Loading...</div>
+        return <Loading />
     }
 
     if (!user) {
