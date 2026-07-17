@@ -20,7 +20,6 @@ export default function ProfileGate({ children }: ProfileGateProps) {
         return <Navigate to="/login" replace state={{ from: location }} />
     }
 
-    // user exists but no profile → onboarding
     if (!profile) {
         return <Navigate to="/onboarding" replace />
     }

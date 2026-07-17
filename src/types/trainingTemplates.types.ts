@@ -1,4 +1,3 @@
-import type { MuscleGroup } from './muscles.types'
 
 export interface TemplateExercise {
     exercise_id: string

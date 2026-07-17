@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Modal from './components/Modal'
 import { MealForm } from './features/meals/MealForm'
 import { useMealUI } from './app/contexts/MealUIContext'
+import './index.css'
 
 export default function AppLayout() {
     const { pathname } = useLocation()
@@ -17,7 +18,7 @@ export default function AppLayout() {
         <>
             <Navbar />
 
-            <main>
+            <main className="min-h-dvh px-6 pt-20 pb-6 flex flex-col">
                 <Outlet />
             </main>
             <Modal isOpen={isMealModalOpen} onClose={closeMealModal}>
