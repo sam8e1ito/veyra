@@ -38,6 +38,20 @@ export default function Input({
         )
     }
 
+    if (!label && !error) {
+        return (
+            <input
+                type={type}
+                checked={checked}
+                {...props}
+                className={clsx(
+                    'rounded-lg border border-border-accent px-2 py-1 placeholder:text-text-light',
+                    className
+                )}
+            />
+        )
+    }
+
     return (
         <label className="flex flex-col gap-2">
             {label && <span>{label}</span>}
@@ -47,7 +61,7 @@ export default function Input({
                 checked={checked}
                 {...props}
                 className={clsx(
-                    'w-full rounded-lg border-2 border-border-accent px-2 py-1 placeholder:text-text-light',
+                    'w-full rounded-lg border border-border-accent px-2 py-1 placeholder:text-text-light',
                     className
                 )}
             />

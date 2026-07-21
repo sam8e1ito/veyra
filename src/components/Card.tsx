@@ -10,12 +10,12 @@ export default function Card({ title, children, className }: CardProps) {
     return (
         <div
             className={clsx(
-                'bg-bg-secondary rounded-xl border-accent border relative',
+                'bg-bg-secondary rounded-2xl border-accent border relative',
                 className ?? ''
             )}
         >
             {typeof title === 'string' ? (
-                <h3 className="bg-border-accent w-full rounded-xl py-2 text-center border border-accent">
+                <h3 className="bg-border-accent w-full rounded-xl py-2 text-center border border-accent ">
                     {title}
                 </h3>
             ) : (
