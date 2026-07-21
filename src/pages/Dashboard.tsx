@@ -66,10 +66,7 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                <Button
-                    className="rounded-t-none shadow-[inset_0_8px_8px_-4px_rgba(0,0,0,0.3)] font-medium tracking-widest"
-                    onClick={() => navigate('/meals')}
-                >
+                <Button onClick={() => navigate('/meals')} actionBtn>
                     My Meals
                 </Button>
             </Card>
@@ -113,17 +110,15 @@ export default function Dashboard() {
                                 className="ml-2.5"
                             />
                         </div>
-                        <Button className="rounded-t-none shadow-[inset_0_8px_8px_-4px_rgba(0,0,0,0.3)] font-medium tracking-widest">
-                            Start Training
-                        </Button>
+                        <Button actionBtn>Start Training</Button>
                         {/*Will implement later */}
                     </>
                 ) : (
                     <>
                         <p className="my-10 text-center">No workout today</p>
                         <Button
-                            className="rounded-t-none shadow-[inset_0_8px_8px_-4px_rgba(0,0,0,0.3)] font-medium tracking-widest"
                             onClick={() => navigate('/trainings')}
+                            actionBtn
                         >
                             My Trainings
                         </Button>

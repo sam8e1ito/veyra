@@ -101,7 +101,7 @@ export default function OnboardingFlow() {
     return (
         <div className="flex flex-1 flex-col">
             <StepComponent data={data} update={update} />
-            {error && <div className="text-center">{error}</div>}
+            {error && <div className="text-center text-error">{error}</div>}
             <div className="mt-auto flex gap-2">
                 {step > 0 && (
                     <Button className="bg-gray-300" onClick={back}>

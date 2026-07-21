@@ -11,6 +11,7 @@ import { getSplitType } from '@/utils/split'
 import { generateTrainingPlan } from '@/lib/trainings/generateTrainingPlan'
 import { deleteTrainingPlan } from '@/lib/trainings/deleteTrainingPlan'
 import Modal from '@/components/Modal'
+import Card from '@/components/Card'
 
 export default function Settings() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
@@ -142,104 +143,153 @@ export default function Settings() {
 
     return (
         <>
-            <p>Settings</p>
-            <form onSubmit={handleSave}>
-                <Input
-                    label="Height (cm)"
-                    type="number"
-                    value={profile.heightCm}
-                    onChange={(e) => {
-                        setProfile({
-                            ...profile,
-                            heightCm: Number(e.target.value),
-                        })
-                    }}
-                />
-                <Input
-                    label="Weight (kg)"
-                    type="number"
-                    value={profile.weightKg}
-                    onChange={(e) => {
-                        setProfile({
-                            ...profile,
-                            weightKg: Number(e.target.value),
-                        })
-                    }}
-                />
-                <Select
-                    label="Gender"
-                    options={[
-                        { label: 'Male', value: 'male' },
-                        { label: 'Female', value: 'female' },
-                    ]}
-                    value={profile.gender}
-                    onChange={(e) => {
-                        setProfile({
-                            ...profile,
-                            gender: e.target.value as typeof profile.gender,
-                        })
-                    }}
-                />
-                <Input
-                    label="Age"
-                    type="number"
-                    value={profile.age}
-                    onChange={(e) => {
-                        setProfile({
-                            ...profile,
-                            age: Number(e.target.value),
-                        })
-                    }}
-                />
-                <Select
-                    label="Trainings a week"
-                    options={[
-                        { label: '1-2', value: String(2) },
-                        { label: '3-4', value: String(4) },
-                        { label: '5+', value: String(5) },
-                    ]}
-                    value={profile.trainingFrequency}
-                    onChange={(e) => {
-                        const frequency = Number(e.target.value)
-                        setProfile({
-                            ...profile,
-                            trainingFrequency: frequency,
-                            splitType: getSplitType(frequency),
-                        })
-                    }}
-                />
+            <Card title="Settings">
+                <form onSubmit={handleSave} className="flex flex-col gap-4 p-4">
+                    <Input
+                        label="Height (cm)"
+                        type="number"
+                        value={profile.heightCm}
+                        onChange={(e) => {
+                            setProfile({
+                                ...profile,
+                                heightCm: Number(e.target.value),
+                            })
+                        }}
+                    />
+                    <Input
+                        label="Weight (kg)"
+                        type="number"
+                        value={profile.weightKg}
+                        onChange={(e) => {
+                            setProfile({
+                                ...profile,
+                                weightKg: Number(e.target.value),
+                            })
+                        }}
+                    />
+                    <Select
+                        label="Gender"
+                        options={[
+                            { label: 'Male', value: 'male' },
+                            { label: 'Female', value: 'female' },
+                        ]}
+                        value={profile.gender}
+                        onChange={(e) => {
+                            setProfile({
+                                ...profile,
+                                gender: e.target.value as typeof profile.gender,
+                            })
+                        }}
+                    />
+                    <Input
+                        label="Age"
+                        type="number"
+                        value={profile.age}
+                        onChange={(e) => {
+                            setProfile({
+                                ...profile,
+                                age: Number(e.target.value),
+                            })
+                        }}
+                    />
+                    <Select
+                        label="Trainings a week"
+                        options={[
+                            { label: '1-2', value: String(2) },
+                            { label: '3-4', value: String(4) },
+                            { label: '5+', value: String(5) },
+                        ]}
+                        value={profile.trainingFrequency}
+                        onChange={(e) => {
+                            const frequency = Number(e.target.value)
+                            setProfile({
+                                ...profile,
+                                trainingFrequency: frequency,
+                                splitType: getSplitType(frequency),
+                            })
+                        }}
+                    />
 
-                <Button type="submit" disabled={loading}>
-                    {loading ? 'Saving...' : 'Save'}
-                </Button>
-            </form>
-            <Button onClick={handleSignOut} disabled={loading}>
-                Sign Out
-            </Button>
-            <Button
-                onClick={() => setIsDeleteModalOpen(true)}
-                disabled={loading}
-            >
-                Delete Account
-            </Button>
+                    <Button
+                        type="submit"
+                        disabled={loading}
+                        state={loading ? 'loading' : 'default'}
+                    >
+                        {loading ? 'Saving...' : 'Save'}
+                    </Button>
+
+                    <hr />
+
+                    {/* Change Password Button */}
+                    <Button
+                        type="button"
+                        onClick={() => setIsPasswordModalOpen(true)}
+                        disabled={loading}
+                    >
+                        Change Password
+                    </Button>
+
+                    {/* Sign Out Button  */}
+                    <Button
+                        type="button"
+                        onClick={handleSignOut}
+                        disabled={loading}
+                        state={loading ? 'loading' : 'error'}
+                    >
+                        Sign Out
+                    </Button>
+
+                    {/* Delete Account Button  */}
+                    <Button
+                        type="button"
+                        onClick={() => setIsDeleteModalOpen(true)}
+                        disabled={loading}
+                        state={loading ? 'loading' : 'error'}
+                    >
+                        Delete Account
+                    </Button>
+                </form>
+            </Card>
+
+            {/* Delete Account Modal  */}
             <Modal
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
+                closeBtn={false}
             >
-                <h3>Delete Account?</h3>
+                <h3 className="text-xl font-bold my-2">Delete Account?</h3>
 
-                <Button onClick={() => setIsDeleteModalOpen(false)}>
-                    Cancel
-                </Button>
-                <Button onClick={handleDeleteAccount}>Delete</Button>
+                <ul className="list-disc pl-5 text-sm text-text-light-secondary space-y-1">
+                    <li>Your profile will be permanently deleted.</li>
+                    <li>All meals will be removed.</li>
+                    <li>
+                        All training plans and workout history will be lost.
+                    </li>
+                </ul>
+                <div className="rounded-xl border border-error bg-error/10 p-4 mt-auto">
+                    <p className="font-medium text-error">Warning</p>
+                    <p className="mt-2 text-sm text-text-light-secondary">
+                        This action is permanent and cannot be undone.
+                    </p>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                    <Button
+                        type="button"
+                        onClick={() => setIsDeleteModalOpen(false)}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleDeleteAccount}
+                        state={loading ? 'loading' : 'error'}
+                    >
+                        {loading ? 'Deleting...' : 'Delete'}
+                    </Button>
+                </div>
             </Modal>
 
-            <Button
-                onClick={() => setIsPasswordModalOpen(true)}
-                disabled={loading}
-            >
-                Change Password
-            </Button>
+            {/* Change Password Modal */}
             <Modal
                 isOpen={isPasswordModalOpen}
                 onClose={() => {
@@ -249,7 +299,6 @@ export default function Settings() {
             >
                 <Input
                     label="Your Old Password:"
-                    placeholder="..."
                     type="password"
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     value={currentPassword}
@@ -258,22 +307,13 @@ export default function Settings() {
 
                 <Input
                     label="Your New Password:"
-                    placeholder="Secret13a3..."
                     type="password"
                     onChange={(e) => setNewPassword(e.target.value)}
                     value={newPassword}
                     error={newPasswordError}
                 />
 
-                <div>
-                    <Button
-                        onClick={() => {
-                            setIsPasswordModalOpen(false)
-                            setNewPassword('')
-                        }}
-                    >
-                        Close
-                    </Button>
+                <div className="mt-auto flex ">
                     <Button
                         onClick={handleChangePassword}
                         disabled={loading || newPassword.trim().length < 6}
@@ -283,7 +323,7 @@ export default function Settings() {
                 </div>
             </Modal>
 
-            {error && <p>{error}</p>}
+            {error && <p className="text-center text-error">{error}</p>}
         </>
     )
 }
