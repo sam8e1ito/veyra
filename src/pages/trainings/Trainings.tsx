@@ -1,7 +1,6 @@
 import Button from '@/components/Button'
 import Card from '@/components/Card'
 import { useAuth } from '@/hooks/useAuth'
-import { useProfile } from '@/hooks/useProfile'
 import { getTrainingPlan } from '@/services/training'
 import type { Training } from '@/types/training.types'
 import { useEffect, useState } from 'react'
@@ -23,8 +22,6 @@ export default function Trainings() {
         loadTrainings()
     }, [user])
 
-    const { splitLabel } = useProfile()
-
     if (!user) {
         return <p>Loading...</p>
     }
@@ -35,23 +32,34 @@ export default function Trainings() {
 
     return (
         <>
-            <Card title="Your current split is">
-                <p>{splitLabel}</p>
-            </Card>
-            <Card title="Your trainings:">
-                {uniqueTrainings.map((training: Training) => (
-                    <div key={training.id}>
-                        <p>{training.name}</p>
-                        <Button
-                            onClick={() =>
-                                navigate(`/trainings/${training.id}`)
-                            }
-                        >
-                            View Training
-                        </Button>
-                    </div>
-                ))}
-            </Card>
+            <div>
+                <h3 className="w-full border border-accent rounded-2xl p-4 mb-4 bg-bg-secondary text-center">
+                    Your Trainings
+                </h3>
+                <div className="flex flex-col gap-4">
+                    {uniqueTrainings.map((training: Training) => (
+                        <Card key={training.id}>
+                            <div className="text-center flex flex-col justify-center items-center my-10">
+                                <span className="uppercase font-bold text-accent text-[12px]">
+                                    Workout
+                                </span>
+                                <p className="text-[32px] uppercase tracking-widest font-extrabold leading-none">
+                                    {training.name}
+                                </p>
+                            </div>
+
+                            <Button
+                                actionBtn
+                                onClick={() =>
+                                    navigate(`/trainings/${training.id}`)
+                                }
+                            >
+                                View Training
+                            </Button>
+                        </Card>
+                    ))}
+                </div>
+            </div>
         </>
     )
 }

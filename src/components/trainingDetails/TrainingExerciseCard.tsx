@@ -23,18 +23,20 @@ export default function TrainingExerciseCard({
     onRemoveSet,
 }: Props) {
     return (
-        <div>
-            <span>{exercise.name}</span>
-            {exercise.workout_sets.map((set) => (
-                <WorkoutSetRow
-                    key={set.id}
-                    set={set}
-                    onChange={onChange}
-                    isEditing={isEditing}
-                    onRemoveSet={onRemoveSet}
-                    exerciseId={exercise.id}
-                />
-            ))}
+        <div className=" border p-4 rounded-2xl border-accent">
+            <span className="text-xl">{exercise.name}</span>
+            <div className="flex flex-col gap-2 my-2">
+                {exercise.workout_sets.map((set) => (
+                    <WorkoutSetRow
+                        key={set.id}
+                        set={set}
+                        onChange={onChange}
+                        isEditing={isEditing}
+                        onRemoveSet={onRemoveSet}
+                        exerciseId={exercise.id}
+                    />
+                ))}
+            </div>
 
             {isEditing && (
                 <Button onClick={() => onAddSet(exercise.id)}>Add Set</Button>

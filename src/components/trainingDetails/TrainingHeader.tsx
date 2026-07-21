@@ -15,11 +15,18 @@ export default function TrainingHeader({
 }: Props) {
     return (
         <>
-            <Button onClick={onBack}>Back</Button>
+            <div className="flex flex-row gap-4">
+                <Button onClick={onBack} state="loading">
+                    Back
+                </Button>
 
-            <Button onClick={isEditing ? onSave : onEdit}>
-                {isEditing ? 'Save' : 'Edit'}
-            </Button>
+                <Button
+                    onClick={isEditing ? onSave : onEdit}
+                    state={isEditing ? 'success' : 'default'}
+                >
+                    {isEditing ? 'Save' : 'Edit'}
+                </Button>
+            </div>
         </>
     )
 }

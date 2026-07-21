@@ -23,6 +23,22 @@ export function useTrainingEditor(initialExercises: Exercise[]) {
         )
     }, [initialExercises])
 
+    const resetExercises = () => {
+        setEditedExercises(
+            initialExercises.map(exercise => ({
+                ...exercise,
+                workout_sets: [...exercise.workout_sets],
+            }))
+        )
+
+        setDeletedSets([])
+    }
+
+    const cancel = () => {
+        resetExercises()
+        setIsEditing(false)
+    }
+
     const updateSet = (
         id: string,
         field: keyof TrainingSet,
@@ -164,6 +180,7 @@ const save = async () => {
     return {
         editedExercises,
         isEditing,
+        cancel,
         setIsEditing,
         updateSet,
         addSet,

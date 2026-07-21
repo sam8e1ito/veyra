@@ -22,6 +22,7 @@ export default function TrainingDetails() {
         editedExercises,
         isEditing,
         setIsEditing,
+        cancel,
         updateSet,
         addSet,
         removeSet,
@@ -32,20 +33,25 @@ export default function TrainingDetails() {
         <>
             <TrainingHeader
                 isEditing={isEditing}
-                onBack={() => navigate('/trainings')}
+                onBack={
+                    isEditing ? () => cancel() : () => navigate('/trainings')
+                }
                 onEdit={() => setIsEditing(true)}
                 onSave={save}
             />
 
-            <h1>{training.name}</h1>
-
-            <TrainingExerciseList
-                exercises={editedExercises}
-                isEditing={isEditing}
-                onAddSet={addSet}
-                onChange={updateSet}
-                onRemoveSet={removeSet}
-            />
+            <div className="flex flex-col gap-4 bg-bg-secondary border border-accent rounded-2xl p-4 mt-4">
+                <h1 className="text-2xl uppercase font-bold text-center">
+                    {training.name}
+                </h1>
+                <TrainingExerciseList
+                    exercises={editedExercises}
+                    isEditing={isEditing}
+                    onAddSet={addSet}
+                    onChange={updateSet}
+                    onRemoveSet={removeSet}
+                />
+            </div>
         </>
     )
 }

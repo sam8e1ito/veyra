@@ -21,7 +21,7 @@ export default function TrainingExerciseList({
     onRemoveSet,
 }: Props) {
     return (
-        <div>
+        <div className="flex flex-col gap-4">
             {exercises.map((exercise) => (
                 <TrainingExerciseCard
                     key={exercise.id}
