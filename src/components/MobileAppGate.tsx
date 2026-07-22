@@ -3,11 +3,7 @@ import InstallBanner from './InstallBanner'
 import Icon from './Icon'
 import VeyraLogo from '@/assets/logos/veyra.svg?react'
 
-type Props = {
-    children: React.ReactNode
-}
-
-export default function MobileAppGate({ children }: Props) {
+export default function MobileAppGate() {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 500)
 
     useEffect(() => {
@@ -44,8 +40,6 @@ export default function MobileAppGate({ children }: Props) {
                         open this page on a mobile device.
                     </p>
 
-                    <InstallBanner />
-
                     <div className="mt-8 rounded-2xl border border-border-accent/40 bg-bg-secondary/40 px-6 py-4">
                         <p className="text-sm text-text-light-secondary">
                             Designed for screens under 500px
@@ -56,5 +50,9 @@ export default function MobileAppGate({ children }: Props) {
         )
     }
 
-    return children
+    return (
+        <>
+            <InstallBanner />
+        </>
+    )
 }
