@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import InstallScreen from './InstallBanner'
+import InstallPage from './InstallPage'
+import { useIsInstalled } from '@/hooks/useIsInstalled'
 
 type Props = {
     children: React.ReactNode
@@ -7,7 +8,10 @@ type Props = {
 
 export default function MobileAppGate({ children }: Props) {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 500)
-    const [hasContinued, setHasContinued] = useState(false)
+    const [hasContinued, setHasContinued] = useState(
+        localStorage.getItem('skip-install') === 'true'
+    )
+    const isInstalled = useIsInstalled()
 
     useEffect(() => {
         const checkScreen = () => {
@@ -31,8 +35,15 @@ export default function MobileAppGate({ children }: Props) {
         )
     }
 
-    if (!hasContinued) {
-        return <InstallScreen onContinue={() => setHasContinued(true)} />
+    if (!hasContinued && !isInstalled) {
+        return (
+            <InstallPage
+                onContinue={() => {
+                    localStorage.setItem('skip-install', 'true')
+                    setHasContinued(true)
+                }}
+            />
+        )
     }
 
     return children

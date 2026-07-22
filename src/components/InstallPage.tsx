@@ -6,21 +6,23 @@ type Props = {
     onContinue: () => void
 }
 
-export default function InstallScreen({ onContinue }: Props) {
+export default function InstallPage({ onContinue }: Props) {
     const { install } = useInstallPrompt()
+
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
 
     return (
         <div
             className="
-            flex
-            min-h-screen
-            flex-col
-            items-center
-            justify-center
-            bg-bg-primary
-            px-6
-            text-center
-        "
+                flex
+                min-h-screen
+                flex-col
+                items-center
+                justify-center
+                bg-bg-primary
+                px-6
+                text-center
+            "
         >
             <div className="mb-8">
                 <Icon icon={VeyraLogo} className="h-24 w-24" />
@@ -47,9 +49,12 @@ export default function InstallScreen({ onContinue }: Props) {
             </p>
 
             <div className="flex w-full max-w-sm flex-col gap-4">
-                <button
-                    onClick={install}
-                    className="
+                {isIOS ? (
+                    <p>Tap Share → Add to Home Screen</p>
+                ) : (
+                    <button
+                        onClick={install}
+                        className="
                         rounded-2xl
                         bg-accent
                         px-8
@@ -57,9 +62,10 @@ export default function InstallScreen({ onContinue }: Props) {
                         font-bold
                         text-text-dark
                     "
-                >
-                    Install Veyra
-                </button>
+                    >
+                        Install Veyra
+                    </button>
+                )}
 
                 <button
                     onClick={onContinue}
