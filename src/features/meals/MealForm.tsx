@@ -61,6 +61,7 @@ function MealFormFields({ meal }: { meal: Meal | null }) {
 
     return (
         <form
+            className="h-full flex flex-col gap-4"
             onSubmit={async (e) => {
                 e.preventDefault()
                 if (saving) return
@@ -98,10 +99,6 @@ function MealFormFields({ meal }: { meal: Meal | null }) {
                 }
             }}
         >
-            <Button type="button" onClick={closeMealModal}>
-                x
-            </Button>
-
             <Input
                 type="text"
                 label="Meal name"
@@ -139,9 +136,15 @@ function MealFormFields({ meal }: { meal: Meal | null }) {
                 }
             />
 
-            <div>Calories: {calories}</div>
+            <div className="text-center">
+                Calories: <span className="text-accent">{calories}</span>
+            </div>
 
-            <Button type="submit" disabled={!title || saving}>
+            <Button
+                type="submit"
+                disabled={!title || saving}
+                className="mt-auto"
+            >
                 {saving ? 'Saving...' : isEditing ? 'Edit Meal' : 'Add Meal'}
             </Button>
         </form>
