@@ -17,6 +17,9 @@ import RequireAuth from './RequireAuth'
 import Register from '@/pages/Register'
 import TrainingDetails from '@/pages/trainings/TrainingDetails'
 import AuthLayout from '@/AuthLayout'
+import Terms from '@/pages/legal/Terms'
+import PrivacyPolicy from '@/pages/legal/PrivacyPolicy'
+import Imprint from '@/pages/legal/Imprint'
 
 export const router = createBrowserRouter([
     {
@@ -25,6 +28,18 @@ export const router = createBrowserRouter([
             { path: '/login', element: <Login /> },
             { path: '/register', element: <Register /> },
         ],
+    },
+    {
+        path: '/terms',
+        element: <Terms />,
+    },
+    {
+        path: '/privacy-policy',
+        element: <PrivacyPolicy />,
+    },
+    {
+        path: '/imprint',
+        element: <Imprint />,
     },
     {
         path: '/welcome',

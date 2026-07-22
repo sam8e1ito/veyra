@@ -18,7 +18,7 @@ export default function AppLayout() {
         <>
             <Navbar />
 
-            <main className="flex flex-1 flex-col px-6 pt-20 pb-36">
+            <main className="flex flex-1 flex-col px-6 pt-12 pb-36">
                 <Outlet />
             </main>
             <Modal

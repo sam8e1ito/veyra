@@ -31,9 +31,9 @@ export default function MobileAppGate({ children }: Props) {
 
     if (!isMobile) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-zinc-950 px-6">
-                <div className="max-w-md rounded-3xl border border-zinc-800 bg-zinc-900 p-8 text-center shadow-2xl">
-                    <Icon icon={VeyraLogo} size={125} />
+            <div className="flex min-h-screen items-center justify-center bg-bg-primary px-6">
+                <div className="max-w-md rounded-3xl border border-zinc-800 bg-bg-primary p-8 text-center shadow-2xl">
+                    <Icon icon={VeyraLogo} size={125} className="w-full mb-2" />
 
                     <h1 className="mb-3 text-3xl font-bold text-white">
                         Veyra is a mobile app

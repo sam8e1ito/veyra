@@ -1,6 +1,6 @@
 import { useAuth } from '@/hooks/useAuth'
 import Button from '@/components/Button'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import Input from '@/components/Input'
 import { useProfile } from '@/hooks/useProfile'
@@ -324,6 +324,20 @@ export default function Settings() {
             </Modal>
 
             {error && <p className="text-center text-error">{error}</p>}
+
+            <div className="flex flex-row gap-2 justify-center mt-2 underline">
+                <Link to="/privacy-policy" className="text-accent">
+                    Privacy Policy
+                </Link>
+
+                <Link to="/terms" className="text-accent">
+                    Terms of Service
+                </Link>
+
+                <Link to="/imprint" className="text-accent">
+                    Imprint
+                </Link>
+            </div>
         </>
     )
 }

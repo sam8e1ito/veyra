@@ -97,18 +97,21 @@ export default function Navbar() {
     const { openCreate } = useMealUI()
 
     const currentOrder = navbarOrders[normalizedPath]
+
     return (
         <nav
             className="
                 fixed bottom-0 left-1/2
                 -translate-x-1/2
-                flex items-center gap-2
+                flex items-center
+                gap-[clamp(6px,2vw,12px)]
                 rounded-t-[52px]
                 bg-bg-secondary
-                px-5 py-3 pb-10
+                px-[clamp(12px,4vw,24px)]
+                py-3
+                pb-[calc(env(safe-area-inset-bottom)+16px)]
                 border border-b-0 border-border-accent
                 z-10
-                translate-y-px
             "
         >
             {currentOrder.map(({ label, to, icon }, index) => {
@@ -127,16 +130,34 @@ export default function Navbar() {
                             navigate(to)
                         }}
                         className={clsx(
-                            'flex items-center justify-center rounded-full transition-all border border-accent',
+                            `
+                            flex items-center justify-center 
+                            rounded-full transition-all 
+                            border border-accent
+                            `,
                             isActive
-                                ? 'h-20 w-20 bg-accent text-bg-primary'
-                                : 'h-14 w-14 bg-border-accent text-accent'
+                                ? `
+                                size-[clamp(64px,18vw,80px)]
+                                bg-accent
+                                text-bg-primary
+                                `
+                                : `
+                                size-[clamp(44px,13vw,56px)]
+                                bg-border-accent
+                                text-accent
+                                `
                         )}
                     >
                         {isMeals && isMealsPage ? (
-                            <Icon icon={AddIcon} size={isActive ? 44 : 24} />
+                            <Icon
+                                icon={AddIcon}
+                                size={isActive ? 'clamp(32px,10vw,44px)' : 24}
+                            />
                         ) : (
-                            <Icon icon={icon} size={isActive ? 44 : 24} />
+                            <Icon
+                                icon={icon}
+                                size={isActive ? 'clamp(32px,10vw,44px)' : 24}
+                            />
                         )}
                     </button>
                 )
