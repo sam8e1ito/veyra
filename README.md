@@ -6,7 +6,6 @@
 
 Track your workouts, meals, and progress in one mobile-first application.
 
-<img src="@/assets/logos/veyra.svg" alt="Veyra Logo" width="120"/>
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
