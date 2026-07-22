@@ -3,7 +3,11 @@ import InstallBanner from './InstallBanner'
 import Icon from './Icon'
 import VeyraLogo from '@/assets/logos/veyra.svg?react'
 
-export default function MobileAppGate() {
+type Props = {
+    children: React.ReactNode
+}
+
+export default function MobileAppGate({ children }: Props) {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 500)
 
     useEffect(() => {
