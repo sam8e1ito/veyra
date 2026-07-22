@@ -8,6 +8,7 @@
     --color-text-dark: #000000;
     --color-accent: #ecc61d;
     --color-border-accent: #9b3922;
+    --color-error: #c62828;
 }
 
 @font-face {
@@ -46,6 +47,7 @@
     --color-text-dark: var(--color-text-dark);
     --color-accent: var(--color-accent);
     --color-border-accent: var(--color-border-accent);
+    --color-error: var(--color-error);
     --font-sf: 'SF-Pro', sans-serif;
 }
 
@@ -61,8 +63,15 @@ body {
     box-sizing: border-box;
 }
 
+html,
+body,
 #root {
-    min-height: 100dvh;
+    height: 100%;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
 }
 @keyframes loading-bar {
     0%,
@@ -77,4 +86,54 @@ body {
 
 @utility animate-loading-bar {
     animation: loading-bar 1s ease-in-out infinite;
+}
+
+hr {
+    border-color: var(--color-accent);
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes emptyStatePulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.03);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+.animate-empty-state {
+    animation: emptyStatePulse 4s ease-in-out infinite;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
 }
