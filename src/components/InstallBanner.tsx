@@ -1,53 +1,80 @@
 import { useInstallPrompt } from '@/hooks/useInstallPrompt'
-import { useNavigate } from 'react-router-dom'
 import Icon from './Icon'
 import VeyraLogo from '@/assets/logos/veyra.svg?react'
 
-export default function InstallBanner() {
-    const navigate = useNavigate()
+type Props = {
+    onContinue: () => void
+}
 
-    const { canInstall, install } = useInstallPrompt()
-
-    if (!canInstall) return null
+export default function InstallScreen({ onContinue }: Props) {
+    const { install } = useInstallPrompt()
 
     return (
-        <div className="flex w-full flex-col gap-4">
-            <div className="mb-8 flex h-24 w-24 items-center justify-center rounded-3xl">
-                <Icon icon={VeyraLogo} className="h-16 w-16 rounded-2xl" />
+        <div
+            className="
+            flex
+            min-h-screen
+            flex-col
+            items-center
+            justify-center
+            bg-bg-primary
+            px-6
+            text-center
+        "
+        >
+            <div className="mb-8">
+                <Icon icon={VeyraLogo} className="h-24 w-24" />
             </div>
 
-            <button
-                onClick={install}
+            <h1
                 className="
-                    rounded-2xl
-                    bg-accent
-                    px-8
-                    py-4
-                    font-bold
-                    text-text-dark
-                    transition
-                    hover:scale-[1.02]
-                    active:scale-95
-                "
+                mb-3
+                text-3xl
+                font-bold
+                text-text-light
+            "
             >
                 Install Veyra
-            </button>
+            </h1>
 
-            <button
+            <p
                 className="
-                    rounded-2xl
-                    border
-                    border-border-accent
-                    px-8
-                    py-4
-                    text-text-light
-                    transition
-                    hover:bg-bg-secondary
-                "
-                onClick={() => navigate('/')}
+                mb-8
+                text-text-light-secondary
+            "
             >
-                Continue in browser
-            </button>
+                Get the best experience by installing the app.
+            </p>
+
+            <div className="flex w-full max-w-sm flex-col gap-4">
+                <button
+                    onClick={install}
+                    className="
+                        rounded-2xl
+                        bg-accent
+                        px-8
+                        py-4
+                        font-bold
+                        text-text-dark
+                    "
+                >
+                    Install Veyra
+                </button>
+
+                <button
+                    onClick={onContinue}
+                    className="
+                        rounded-2xl
+                        border
+                        border-border-accent
+                        px-8
+                        py-4
+                        text-text-light
+                    "
+                >
+                    Continue in browser
+                </button>
+            </div>
         </div>
     )
 }
